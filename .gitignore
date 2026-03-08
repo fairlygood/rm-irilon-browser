@@ -1,0 +1,48 @@
+# Build directories
+dist-local/
+dist-rm/
+dist-release/
+qml_output/
+
+# AppLoad framework directory
+rm-appload/
+
+# Claude/Agent related files and directories
+.claude/
+.claude/*
+claude.db
+*.claude
+claude.local.json
+settings.local.json
+
+# Go build artifacts
+go-src/*.exe
+go-src/*.dll
+go-src/*.so
+go-src/*.dylib
+go-src/*.out
+
+# OS specific files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Certificate and bookmark data files
+.gemini-certificates.json
+
+CLAUDE.md
+AGENTS.md
+run-appload.sh

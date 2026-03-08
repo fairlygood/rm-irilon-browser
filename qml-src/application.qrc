@@ -1,0 +1,44 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ui/main.qml</file>
+        <file>ui/BrowserWindow.qml</file>
+        <file>ui/URLBar.qml</file>
+        <file>ui/ContentArea.qml</file>
+        <file>ui/SettingsPage.qml</file>
+        <file>ui/BookmarkItem.qml</file>
+        <file>ui/BookmarksPage.qml</file>
+        <file>ui/SettingsSavedDialog.qml</file>
+        <file>ui/CertificateItem.qml</file>
+        <file>ui/InputDialog.qml</file>
+        <file>ui/CertificateSelectDialog.qml</file>
+        <file>ui/HttpLinkDialog.qml</file>
+        <file>ui/HomepageNotSetDialog.qml</file>
+        <file>ui/CertificateExpiredDialog.qml</file>
+        <file>ui/ErrorDialog.qml</file>
+        <file>ui/URLInputModal.qml</file>
+        <file>ui/GeminiBaseElement.qml</file>
+        <file>ui/GeminiTextElement.qml</file>
+        <file>ui/GeminiHeadingElement.qml</file>
+        <file>ui/GeminiLinkElement.qml</file>
+        <file>ui/GeminiPreformattedElement.qml</file>
+        <file>ui/GeminiListElement.qml</file>
+        <file>ui/GeminiListItemElement.qml</file>
+        <file>ui/GeminiBlockquoteElement.qml</file>
+        <file>ui/GeminiImageElement.qml</file>
+        <file>ui/GeminiInlineImage.qml</file>
+        <file>ui/ContentRenderer.qml</file>
+        <file>ui/settings.svg</file>
+        <file>ui/bookmark.svg</file>
+        <file>ui/bookmark-check.svg</file>
+        <file>ui/home.svg</file>
+        <file>ui/arrow-left.svg</file>
+        <file>ui/arrow-right.svg</file>
+        <file>ui/go.svg</file>
+        <file>ui/show-bookmarks.svg</file>
+        <file>ui/trash.svg</file>
+        <file>fonts/DejaVuSansMono.ttf</file>
+        <file>fonts/DejaVuSansMono-Bold.ttf</file>
+        <file>fonts/DejaVuSansMono-Oblique.ttf</file>
+        <file>fonts/DejaVuSansMono-BoldOblique.ttf</file>
+    </qresource>
+</RCC>
