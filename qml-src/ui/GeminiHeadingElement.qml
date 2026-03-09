@@ -31,6 +31,7 @@ Item {
         text: parent.text
         font.family: parent.fontFamily
         font.pixelSize: Math.round((textSize + (4 - headingLevel) * 2) * scaleFactor)
+        font.bold: true
         color: "#000000"
         wrapMode: Text.WordWrap
 

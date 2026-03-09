@@ -270,6 +270,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
+            focus: true
 
             Column {
                 width: settingsPage.width
@@ -278,6 +279,7 @@ Rectangle {
                 rightPadding: 20 * scaleFactor
                 // Padding at the top of the settings content area, below the tab bar
                 Rectangle {
+                    id: topPadding
                     width: parent.width
                     height: 40 * scaleFactor
                     color: "transparent"
@@ -335,6 +337,16 @@ Rectangle {
                             border.color: "#000000"
                             border.width: 2
                         }
+                        onFocusChanged: {
+                            if (!focus) {
+                                // Keyboard dismissed - release focus from all text fields
+                                textSizeField.focus = false
+                                homepageField.focus = false
+                                proxyUrlField.focus = false
+                                proxyPortField.focus = false
+                                commonNameField.focus = false
+                            }
+                        }
                         onAccepted: {
                             // Release focus to dismiss virtual keyboard
                             paddingField.focus = false
@@ -375,6 +387,16 @@ Rectangle {
                             color: "#ffffff"
                             border.color: "#000000"
                             border.width: 2
+                        }
+                        onFocusChanged: {
+                            if (!focus) {
+                                // Keyboard dismissed - release focus from all text fields
+                                paddingField.focus = false
+                                homepageField.focus = false
+                                proxyUrlField.focus = false
+                                proxyPortField.focus = false
+                                commonNameField.focus = false
+                            }
                         }
                         onAccepted: {
                             // Release focus to dismiss virtual keyboard
@@ -430,6 +452,16 @@ Rectangle {
                             color: "#ffffff"
                             border.color: "#000000"
                             border.width: 2
+                        }
+                        onFocusChanged: {
+                            if (!focus) {
+                                // Keyboard dismissed - release focus from all text fields
+                                paddingField.focus = false
+                                textSizeField.focus = false
+                                proxyUrlField.focus = false
+                                proxyPortField.focus = false
+                                commonNameField.focus = false
+                            }
                         }
                         onAccepted: {
                             // Release focus to dismiss virtual keyboard
@@ -489,6 +521,16 @@ Rectangle {
                             border.color: "#000000"
                             border.width: 2
                         }
+                        onFocusChanged: {
+                            if (!focus) {
+                                // Keyboard dismissed - release focus from all text fields
+                                paddingField.focus = false
+                                textSizeField.focus = false
+                                homepageField.focus = false
+                                proxyPortField.focus = false
+                                commonNameField.focus = false
+                            }
+                        }
                         onAccepted: {
                             // Release focus to dismiss virtual keyboard
                             proxyUrlField.focus = false
@@ -510,6 +552,16 @@ Rectangle {
                             color: "#ffffff"
                             border.color: "#000000"
                             border.width: 2
+                        }
+                        onFocusChanged: {
+                            if (!focus) {
+                                // Keyboard dismissed - release focus from all text fields
+                                paddingField.focus = false
+                                textSizeField.focus = false
+                                homepageField.focus = false
+                                proxyUrlField.focus = false
+                                commonNameField.focus = false
+                            }
                         }
                         onAccepted: {
                             // Release focus to dismiss virtual keyboard
@@ -651,6 +703,16 @@ Rectangle {
                                 font.pixelSize: Math.round(14 * scaleFactor)
                                 placeholderText: "Common Name (e.g., Your Name)"
                                 selectByMouse: true
+                                onFocusChanged: {
+                                    if (!focus) {
+                                        // Keyboard dismissed - release focus from all text fields
+                                        paddingField.focus = false
+                                        textSizeField.focus = false
+                                        homepageField.focus = false
+                                        proxyUrlField.focus = false
+                                        proxyPortField.focus = false
+                                    }
+                                }
                                 onAccepted: {
                                     if (commonNameField.text.trim() !== "") {
                                         generateCertificate(commonNameField.text.trim())
