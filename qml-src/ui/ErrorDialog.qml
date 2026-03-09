@@ -48,7 +48,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: "Connection Error"
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(16 * scaleFactor)
                 font.bold: true
                 color: "#cc0000"
@@ -59,7 +59,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: errorDialog.errorMessage
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(12 * scaleFactor)
                 color: "#000000"
                 wrapMode: Text.WordWrap
@@ -70,7 +70,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredHeight: 36 * scaleFactor
                 text: "OK"
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 padding: 10 * scaleFactor
                 background: Rectangle {

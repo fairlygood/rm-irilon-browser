@@ -35,7 +35,7 @@ Rectangle {
                 width: parent.width
                 elide: Text.ElideRight
                 text: bookmarkTitle
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 font.bold: true
             }
@@ -44,7 +44,7 @@ Rectangle {
                 width: parent.width
                 elide: Text.ElideRight
                 text: bookmarkUrl
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(12 * scaleFactor)
                 color: "#666666"
             }

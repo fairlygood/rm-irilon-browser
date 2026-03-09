@@ -12,7 +12,7 @@ Item {
     property real scaleFactor: 2
     property int textSize: 18
     property int padding: 30
-    property string fontFamily: "DejaVu Sans Mono"
+    property string fontFamily: "Maple Mono"
     property int modelIndex: -1
 
     // Signals

@@ -36,9 +36,9 @@
         <file>ui/go.svg</file>
         <file>ui/show-bookmarks.svg</file>
         <file>ui/trash.svg</file>
-        <file>fonts/DejaVuSansMono.ttf</file>
-        <file>fonts/DejaVuSansMono-Bold.ttf</file>
-        <file>fonts/DejaVuSansMono-Oblique.ttf</file>
-        <file>fonts/DejaVuSansMono-BoldOblique.ttf</file>
+        <file>fonts/MapleMono-Regular.ttf</file>
+        <file>fonts/MapleMono-Bold.ttf</file>
+        <file>fonts/MapleMono-Italic.ttf</file>
+        <file>fonts/MapleMono-Bold.ttf</file>
     </qresource>
 </RCC>

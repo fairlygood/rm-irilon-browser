@@ -171,12 +171,12 @@ Rectangle {
     // Font loaders
     FontLoader {
         id: monoFont
-        source: "qrc:/fonts/DejaVuSansMono.ttf"
+        source: "qrc:/fonts/MapleMono-Regular.ttf"
     }
 
     FontLoader {
         id: monoFontBold
-        source: "qrc:/fonts/DejaVuSansMono-Bold.ttf"
+        source: "qrc:/fonts/MapleMono-Bold.ttf"
     }
 
     // Main layout

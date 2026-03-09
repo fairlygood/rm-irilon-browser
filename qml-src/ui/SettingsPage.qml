@@ -113,7 +113,7 @@ Rectangle {
                 }
             }
         } else {
-            var qmlString = 'import QtQuick 2.15; Text { text: "No certificates found"; font.family: "DejaVu Sans Mono"; font.pixelSize: Math.round(12 * ' + scaleFactor + '); color: "#666666" }'
+            var qmlString = 'import QtQuick 2.15; Text { text: "No certificates found"; font.family: "Maple Mono"; font.pixelSize: Math.round(12 * ' + scaleFactor + '); color: "#666666" }'
             Qt.createQmlObject(qmlString, certificateList, "noCertificates")
         }
     }
@@ -133,13 +133,13 @@ Rectangle {
                 hasAssociations = true
                     
                 var certId = certificateAssociations[domain]
-                var qmlString = 'import QtQuick 2.15; import QtQuick.Controls 2.15; Rectangle { width: parent.width; height: 40 * ' + scaleFactor + '; color: "#f9f9f9"; border.color: "#000000"; border.width: 2; Row { anchors.fill: parent; anchors.margins: 10 * ' + scaleFactor + '; spacing: 10 * ' + scaleFactor + '; Text { width: parent.width * 0.6; elide: Text.ElideRight; text: "' + domain + '"; font.family: "DejaVu Sans Mono"; font.pixelSize: Math.round(12 * ' + scaleFactor + ') } Text { width: parent.width * 0.3; elide: Text.ElideRight; text: "' + certId.substring(0, 16) + '..."; font.family: "DejaVu Sans Mono"; font.pixelSize: Math.round(12 * ' + scaleFactor + '); color: "#666666" } Button { width: 60 * ' + scaleFactor + '; height: 30 * ' + scaleFactor + '; text: "Delete"; font.pixelSize: Math.round(10 * ' + scaleFactor + '); onClicked: deleteAssociation("' + domain + '") } } }'
+                var qmlString = 'import QtQuick 2.15; import QtQuick.Controls 2.15; Rectangle { width: parent.width; height: 40 * ' + scaleFactor + '; color: "#f9f9f9"; border.color: "#000000"; border.width: 2; Row { anchors.fill: parent; anchors.margins: 10 * ' + scaleFactor + '; spacing: 10 * ' + scaleFactor + '; Text { width: parent.width * 0.6; elide: Text.ElideRight; text: "' + domain + '"; font.family: "Maple Mono"; font.pixelSize: Math.round(12 * ' + scaleFactor + ') } Text { width: parent.width * 0.3; elide: Text.ElideRight; text: "' + certId.substring(0, 16) + '..."; font.family: "Maple Mono"; font.pixelSize: Math.round(12 * ' + scaleFactor + '); color: "#666666" } Button { width: 60 * ' + scaleFactor + '; height: 30 * ' + scaleFactor + '; text: "Delete"; font.pixelSize: Math.round(10 * ' + scaleFactor + '); onClicked: deleteAssociation("' + domain + '") } } }'
                 Qt.createQmlObject(qmlString, domainAssociationList, "assoc_" + domain)
             }
         }
 
         if (!hasAssociations) {
-            var qmlString = 'import QtQuick 2.15; Text { text: "No domain associations found"; font.family: "DejaVu Sans Mono"; font.pixelSize: Math.round(12 * ' + scaleFactor + '); color: "#666666" }'
+            var qmlString = 'import QtQuick 2.15; Text { text: "No domain associations found"; font.family: "Maple Mono"; font.pixelSize: Math.round(12 * ' + scaleFactor + '); color: "#666666" }'
             Qt.createQmlObject(qmlString, domainAssociationList, "noAssociations")
         }
     }
@@ -185,7 +185,7 @@ Rectangle {
                 Text {
                     Layout.fillWidth: true
                     text: "Settings"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(16 * scaleFactor)
                     color: "#000000"
                     horizontalAlignment: Text.AlignHCenter
@@ -209,7 +209,7 @@ Rectangle {
 
                 Button {
                     text: "General"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 0
                     leftPadding: 20 * scaleFactor
@@ -225,7 +225,7 @@ Rectangle {
 
                 Button {
                     text: "Certificates"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     leftPadding: 20 * scaleFactor
@@ -249,7 +249,7 @@ Rectangle {
 
                 Button {
                     text: "About"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     leftPadding: 20 * scaleFactor
@@ -296,7 +296,7 @@ Rectangle {
                         // General Settings section
                         Text {
                             text: "General Settings"
-                            font.family: "DejaVu Sans Mono"
+                            font.family: "Maple Mono"
                             font.pixelSize: Math.round(16 * scaleFactor)
                             font.bold: true
                         }
@@ -315,7 +315,7 @@ Rectangle {
 
                     Text {
                         text: "Padding:"
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -325,7 +325,7 @@ Rectangle {
                         width: 100 * scaleFactor
                         height: 36 * scaleFactor
                         leftPadding: 10 * scaleFactor
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         text: padding.toString()
                         selectByMouse: true
@@ -343,7 +343,7 @@ Rectangle {
 
                     Text {
                         text: "px"
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -356,7 +356,7 @@ Rectangle {
 
                     Text {
                         text: "Text Size:"
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -366,7 +366,7 @@ Rectangle {
                         width: 100 * scaleFactor
                         height: 36 * scaleFactor
                         leftPadding: 10 * scaleFactor
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         text: textSize.toString()
                         selectByMouse: true
@@ -384,7 +384,7 @@ Rectangle {
 
                     Text {
                         text: "px"
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -400,7 +400,7 @@ Rectangle {
                 // Homepage section
                 Text {
                     text: "Homepage"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(16 * scaleFactor)
                     font.bold: true
                 }
@@ -411,7 +411,7 @@ Rectangle {
 
                     Text {
                         text: "Homepage:"
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -421,7 +421,7 @@ Rectangle {
                         width: parent.width - 190 * scaleFactor
                         height: 36 * scaleFactor
                         leftPadding: 10 * scaleFactor
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         text: homepageUrl
                         selectByMouse: true
@@ -448,7 +448,7 @@ Rectangle {
                 // Proxy Settings section
                 Text {
                     text: "Proxy Settings"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(16 * scaleFactor)
                     font.bold: true
                 }
@@ -456,7 +456,7 @@ Rectangle {
                 // Warning text
                 Text {
                     text: "Warning: The proxy owner may be able to see your traffic. Use only trusted proxies, or run your own!"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(12 * scaleFactor)
                     color: "#cc0000"
                     wrapMode: Text.WordWrap
@@ -469,7 +469,7 @@ Rectangle {
 
                     Text {
                         text: "Proxy URL:"
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -479,7 +479,7 @@ Rectangle {
                         width: parent.width - 280 * scaleFactor
                         height: 36 * scaleFactor
                         leftPadding: 10 * scaleFactor
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         text: proxyUrl
                         selectByMouse: true
@@ -500,7 +500,7 @@ Rectangle {
                         width: 70 * scaleFactor
                         height: 36 * scaleFactor
                         leftPadding: 10 * scaleFactor
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         text: proxyPort.toString()
                         selectByMouse: true
@@ -521,7 +521,7 @@ Rectangle {
                 // Proxy example text
                 Text {
                     text: "Example: stargate.gemi.dev port 1994"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(12 * scaleFactor)
                     color: "#666666"
                     wrapMode: Text.WordWrap
@@ -538,7 +538,7 @@ Rectangle {
                 // Refresh Mode section
                 Text {
                     text: "Refresh Mode"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(16 * scaleFactor)
                     font.bold: true
                 }
@@ -546,7 +546,7 @@ Rectangle {
                 // Refresh mode explanation
                 Text {
                     text: "Quality mode (quality) provides better visual quality but slower refresh rates. Fast mode (fast) provides quicker refreshes but lower quality. Ultra-fast mode (ufast) is the fastest."
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(12 * scaleFactor)
                     color: "#666666"
                     wrapMode: Text.WordWrap
@@ -564,7 +564,7 @@ Rectangle {
                         else if (refreshMode === "ufast") return 2
                         else return 0
                     }
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     background: Rectangle {
                         color: "#ffffff"
@@ -577,7 +577,7 @@ Rectangle {
                 Button {
                     id: saveButton
                     text: "Save Settings"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     leftPadding: 20 * scaleFactor
@@ -633,7 +633,7 @@ Rectangle {
                         // Certificate generation section
                         Text {
                             text: "Certificates"
-                            font.family: "DejaVu Sans Mono"
+                            font.family: "Maple Mono"
                             font.pixelSize: Math.round(16 * scaleFactor)
                             font.bold: true
                         }
@@ -647,7 +647,7 @@ Rectangle {
                                 width: parent.width - 220 * scaleFactor
                                 height: 36 * scaleFactor
                                 leftPadding: 10 * scaleFactor
-                                font.family: "DejaVu Sans Mono"
+                                font.family: "Maple Mono"
                                 font.pixelSize: Math.round(14 * scaleFactor)
                                 placeholderText: "Common Name (e.g., Your Name)"
                                 selectByMouse: true
@@ -667,7 +667,7 @@ Rectangle {
 
                             Button {
                                 text: "Generate"
-                                font.family: "DejaVu Sans Mono"
+                                font.family: "Maple Mono"
                                 font.pixelSize: Math.round(14 * scaleFactor)
                                 padding: 10 * scaleFactor
                                 leftPadding: 20 * scaleFactor
@@ -697,7 +697,7 @@ Rectangle {
                         // Certificate list section
                         Text {
                             text: "Certificate List"
-                            font.family: "DejaVu Sans Mono"
+                            font.family: "Maple Mono"
                             font.pixelSize: Math.round(14 * scaleFactor)
                             font.bold: true
                         }
@@ -709,7 +709,7 @@ Rectangle {
 
                             Text {
                                 text: "No certificates found"
-                                font.family: "DejaVu Sans Mono"
+                                font.family: "Maple Mono"
                                 font.pixelSize: Math.round(12 * scaleFactor)
                                 color: "#666666"
                             }
@@ -725,7 +725,7 @@ Rectangle {
                         // Domain associations section
                         Text {
                             text: "Domain Associations"
-                            font.family: "DejaVu Sans Mono"
+                            font.family: "Maple Mono"
                             font.pixelSize: Math.round(14 * scaleFactor)
                             font.bold: true
                         }
@@ -737,7 +737,7 @@ Rectangle {
 
                             Text {
                                 text: "No domain associations found"
-                                font.family: "DejaVu Sans Mono"
+                                font.family: "Maple Mono"
                                 font.pixelSize: Math.round(12 * scaleFactor)
                                 color: "#666666"
                             }
@@ -759,14 +759,14 @@ Rectangle {
 
                         Text {
                             text: "About Irilon"
-                            font.family: "DejaVu Sans Mono"
+                            font.family: "Maple Mono"
                             font.pixelSize: Math.round(16 * scaleFactor)
                             font.bold: true
                         }
 
                         Text {
-                            text: "Version: 1.0.0\n\nA Gemini protocol browser for reMarkable tablets.\n\nBuilt with Qt/QML and Go.\n\nWith thanks to Asivery for Appload and XOVI, without which this would not be possible and also to the creativity and ingenuity of the whole modding community that extends the possibilities of these devices."
-                            font.family: "DejaVu Sans Mono"
+                            text: "Version: 1.0.0\n\nA Gemini protocol browser for reMarkable tablets.\n\nBuilt with Qt/QML and Go.\n\nWith thanks to Asivery for Appload and XOVI, without which this would not be possible and also to the creativity and ingenuity of the whole modding community that extends the possibilities of these devices.\n\nInterface font is Maple, by Subframe7536."
+                            font.family: "Maple Mono"
                             font.pixelSize: Math.round(14 * scaleFactor)
                             wrapMode: Text.WordWrap
                             width: parent.width
@@ -807,7 +807,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: "Settings Saved"
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(16 * scaleFactor)
                 font.bold: true
                 color: "#000000"
@@ -817,7 +817,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: "Your settings have been successfully saved."
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 color: "#000000"
                 wrapMode: Text.WordWrap

@@ -52,7 +52,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: inputPrompt
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 color: "#000000"
                 wrapMode: Text.WordWrap
@@ -63,7 +63,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 36 * scaleFactor
                 leftPadding: 10 * scaleFactor
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 selectByMouse: true
                 echoMode: isSensitive ? TextInput.Password : TextInput.Normal
@@ -89,7 +89,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36 * scaleFactor
                     text: "Cancel"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     background: Rectangle {
@@ -108,7 +108,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36 * scaleFactor
                     text: "Submit"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     background: Rectangle {

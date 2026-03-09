@@ -55,7 +55,7 @@ Rectangle {
                 }
             }
         } else {
-            var qmlString = 'import QtQuick 2.15; Text { width: parent.width; horizontalAlignment: Text.AlignHCenter; text: "No bookmarks yet"; font.family: "DejaVu Sans Mono"; font.pixelSize: Math.round(14 * ' + scaleFactor + '); color: "#666666"; topPadding: 40 * ' + scaleFactor + ' }'
+            var qmlString = 'import QtQuick 2.15; Text { width: parent.width; horizontalAlignment: Text.AlignHCenter; text: "No bookmarks yet"; font.family: "Maple Mono"; font.pixelSize: Math.round(14 * ' + scaleFactor + '); color: "#666666"; topPadding: 40 * ' + scaleFactor + ' }'
             Qt.createQmlObject(qmlString, bookmarksList, "noBookmarks")
         }
     }
@@ -101,7 +101,7 @@ Rectangle {
                 Text {
                     Layout.fillWidth: true
                     text: "Bookmarks"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(16 * scaleFactor)
                     color: "#000000"
                     horizontalAlignment: Text.AlignHCenter

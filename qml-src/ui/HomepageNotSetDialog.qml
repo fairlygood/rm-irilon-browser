@@ -47,7 +47,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: "No homepage set. Please set a homepage in Settings > General."
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 color: "#000000"
                 wrapMode: Text.WordWrap
@@ -58,7 +58,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredHeight: 36 * scaleFactor
                 text: "OK"
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 padding: 10 * scaleFactor
                 background: Rectangle {

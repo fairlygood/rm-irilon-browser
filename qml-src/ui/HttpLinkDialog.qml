@@ -47,7 +47,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: "HTTP/HTTPS links require a proxy to be configured in Settings > General to be viewed in this Gemini browser.\n\nIf you have already configured a proxy, please verify the settings are correct and restart the application."
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 color: "#000000"
                 wrapMode: Text.WordWrap
@@ -58,7 +58,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredHeight: 36 * scaleFactor
                 text: "OK"
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 padding: 10 * scaleFactor
                 background: Rectangle {

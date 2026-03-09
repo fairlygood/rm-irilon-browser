@@ -10,7 +10,7 @@ Item {
     property real scaleFactor: 2.0
     property int padding: 30
     property string mimeType: ""
-    property string fontFamily: "DejaVu Sans Mono"
+    property string fontFamily: "Maple Mono"
     property int textSize: 18
     property int modelIndex: -1
 
@@ -73,7 +73,7 @@ Item {
                 text: "Loading image..."
                 color: "#666666"
                 font.pixelSize: Math.round(14 * scaleFactor)
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
             }
         }
     }

@@ -116,7 +116,7 @@ Rectangle {
             Layout.preferredHeight: 36 * scaleFactor
             leftPadding: 10 * scaleFactor
             text: currentUrl
-            font.family: "DejaVu Sans Mono"
+            font.family: "Maple Mono"
             font.pixelSize: Math.round(14 * scaleFactor)
             readOnly: true
             selectByMouse: true

@@ -50,7 +50,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: "Select Certificate for " + certSelectUrl
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(16 * scaleFactor)
                 font.bold: true
                 color: "#000000"
@@ -90,7 +90,7 @@ Rectangle {
                                 Text {
                                     width: parent.width
                                     text: modelData.subject
-                                    font.family: "DejaVu Sans Mono"
+                                    font.family: "Maple Mono"
                                     font.pixelSize: Math.round(14 * scaleFactor)
                                     color: "#000000"
                                     elide: Text.ElideRight
@@ -99,7 +99,7 @@ Rectangle {
                                 Text {
                                     width: parent.width
                                     text: "Fingerprint: " + modelData.fingerprint
-                                    font.family: "DejaVu Sans Mono"
+                                    font.family: "Maple Mono"
                                     font.pixelSize: Math.round(12 * scaleFactor)
                                     color: "#6c757d"
                                     elide: Text.ElideRight
@@ -118,7 +118,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36 * scaleFactor
                     text: "Cancel"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     background: Rectangle {

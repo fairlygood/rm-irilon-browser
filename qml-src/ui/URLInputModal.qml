@@ -57,7 +57,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: "Enter URL"
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(16 * scaleFactor)
                 font.bold: true
                 color: "#000000"
@@ -70,7 +70,7 @@ Rectangle {
                 leftPadding: 10 * scaleFactor
                 rightPadding: 10 * scaleFactor
                 text: currentUrl
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 selectByMouse: true
                 background: Rectangle {
@@ -93,7 +93,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 40 * scaleFactor
                     text: "Cancel"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     background: Rectangle {
@@ -112,7 +112,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 40 * scaleFactor
                     text: "Go"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     background: Rectangle {
@@ -123,7 +123,7 @@ Rectangle {
                     }
                     contentItem: Text {
                         text: "Go"
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         color: "#ffffff"
                         horizontalAlignment: Text.AlignHCenter

@@ -48,7 +48,7 @@ Rectangle {
             Text {
                 Layout.fillWidth: true
                 text: "Certificate for " + expiredUrl + " has expired. Do you want to bypass this certificate and continue?"
-                font.family: "DejaVu Sans Mono"
+                font.family: "Maple Mono"
                 font.pixelSize: Math.round(14 * scaleFactor)
                 color: "#000000"
                 wrapMode: Text.WordWrap
@@ -62,7 +62,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36 * scaleFactor
                     text: "Cancel"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     background: Rectangle {
@@ -80,7 +80,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36 * scaleFactor
                     text: "Bypass"
-                    font.family: "DejaVu Sans Mono"
+                    font.family: "Maple Mono"
                     font.pixelSize: Math.round(14 * scaleFactor)
                     padding: 10 * scaleFactor
                     background: Rectangle {
@@ -91,7 +91,7 @@ Rectangle {
                     }
                     contentItem: Text {
                         text: "Bypass"
-                        font.family: "DejaVu Sans Mono"
+                        font.family: "Maple Mono"
                         font.pixelSize: Math.round(14 * scaleFactor)
                         color: "#ffffff"
                         horizontalAlignment: Text.AlignHCenter
