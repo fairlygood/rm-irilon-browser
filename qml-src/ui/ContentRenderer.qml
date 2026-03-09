@@ -314,7 +314,7 @@ Item {
                     renderListItems(listItems, listType)
                     listItems = []
                 }
-                var linkParts = line.substring(2).trim().split(' ')
+                var linkParts = line.substring(2).trim().split(/\s+/)
                 var linkUrl = linkParts[0]
                 var linkText = linkParts.slice(1).join(' ') || linkUrl
                 contentModel.append({
