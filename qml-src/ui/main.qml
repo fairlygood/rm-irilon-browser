@@ -24,10 +24,12 @@ Rectangle {
     onCurrentUrlChanged: {
         // Update isBookmarked status based on current URL
         var bookmarked = false;
-        for (var i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].url === currentUrl) {
-                bookmarked = true;
-                break;
+        if (bookmarks && bookmarks.length > 0) {
+            for (var i = 0; i < bookmarks.length; i++) {
+                if (bookmarks[i].url === currentUrl) {
+                    bookmarked = true;
+                    break;
+                }
             }
         }
         isBookmarked = bookmarked;
@@ -49,10 +51,12 @@ Rectangle {
     onBookmarksChanged: {
         // Update isBookmarked status based on current URL
         var bookmarked = false;
-        for (var i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].url === currentUrl) {
-                bookmarked = true;
-                break;
+        if (bookmarks && bookmarks.length > 0) {
+            for (var i = 0; i < bookmarks.length; i++) {
+                if (bookmarks[i].url === currentUrl) {
+                    bookmarked = true;
+                    break;
+                }
             }
         }
         isBookmarked = bookmarked;
@@ -70,6 +74,23 @@ Rectangle {
     signal close()
 
     function unloading() {
+    }
+
+    // Helper function to extract first heading from Gemini content
+    function getFirstHeading(content) {
+        if (!content) return "Untitled"
+        var lines = content.split('\n')
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i]
+            if (line.startsWith('# ')) {
+                return line.substring(2).trim()
+            } else if (line.startsWith('## ')) {
+                return line.substring(3).trim()
+            } else if (line.startsWith('### ')) {
+                return line.substring(4).trim()
+            }
+        }
+        return "Untitled"
     }
 
     Component.onCompleted: {
@@ -328,14 +349,16 @@ Rectangle {
             if (currentUrl) {
                 if (isBookmarked) {
                     // Remove bookmark
+                    isBookmarked = false
                     endpoint.sendMessage(202, currentUrl) // BOOKMARK_REMOVE
                 } else {
                     // Add bookmark
-                    var title = "Gemini Page" // Default title, could be improved
+                    var title = getFirstHeading(browserWindow.currentPageContent)
                     var bookmarkData = {
                         "url": currentUrl,
                         "title": title
                     }
+                    isBookmarked = true
                     endpoint.sendMessage(201, JSON.stringify(bookmarkData)) // BOOKMARK_ADD
                 }
             }
