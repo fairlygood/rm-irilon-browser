@@ -28,7 +28,7 @@ import (
 
 const (
 	// System message types
-	MSG_SYSTEM_TERMINATE      = 0xFFFFFFFF
+	MSG_SYSTEM_TERMINATE       = 0xFFFFFFFF
 	MSG_SYSTEM_NEW_COORDINATOR = 0xFFFFFFFE
 
 	// Application message types
@@ -36,40 +36,40 @@ const (
 	GEMINI_RESPONSE = 101
 
 	// Bookmark message types
-	BOOKMARK_ADD    = 201
-	BOOKMARK_REMOVE = 202
-	BOOKMARK_LIST   = 203
+	BOOKMARK_ADD      = 201
+	BOOKMARK_REMOVE   = 202
+	BOOKMARK_LIST     = 203
 	BOOKMARK_RESPONSE = 301
 
 	// Input message types
-	INPUT_REQUEST      = 401  // Backend requests input from frontend
-	INPUT_RESPONSE     = 402  // Frontend responds with input data
-	INPUT_CANCEL       = 403  // Frontend cancels input request
+	INPUT_REQUEST  = 401 // Backend requests input from frontend
+	INPUT_RESPONSE = 402 // Frontend responds with input data
+	INPUT_CANCEL   = 403 // Frontend cancels input request
 
 	// Certificate message types
-	CERTIFICATE_LIST       = 601
-	CERTIFICATE_ADD        = 602
-	CERTIFICATE_REMOVE     = 603
-	CERTIFICATE_GENERATE   = 604
-	CERTIFICATE_RESPONSE   = 605
-	CERTIFICATE_SELECT     = 606  // Backend requests certificate selection
-	CERTIFICATE_SELECT_RESPONSE = 607  // Frontend responds with selected certificate
-	CERTIFICATE_LIST_ASSOCIATIONS = 608  // Request list of certificate associations
-	CERTIFICATE_DISASSOCIATE = 609  // Remove domain-certificate association
-	CERTIFICATE_EXPIRED    = 610  // Certificate has expired
-	CERTIFICATE_BYPASS     = 611  // User chose to bypass certificate validation
+	CERTIFICATE_LIST              = 601
+	CERTIFICATE_ADD               = 602
+	CERTIFICATE_REMOVE            = 603
+	CERTIFICATE_GENERATE          = 604
+	CERTIFICATE_RESPONSE          = 605
+	CERTIFICATE_SELECT            = 606 // Backend requests certificate selection
+	CERTIFICATE_SELECT_RESPONSE   = 607 // Frontend responds with selected certificate
+	CERTIFICATE_LIST_ASSOCIATIONS = 608 // Request list of certificate associations
+	CERTIFICATE_DISASSOCIATE      = 609 // Remove domain-certificate association
+	CERTIFICATE_EXPIRED           = 610 // Certificate has expired
+	CERTIFICATE_BYPASS            = 611 // User chose to bypass certificate validation
 
 	// Settings message types
-	SETTINGS_GET           = 701  // Frontend requests current settings
-	SETTINGS_SAVE          = 702  // Frontend sends updated settings
-	SETTINGS_RESPONSE      = 703  // Backend sends current settings
+	SETTINGS_GET      = 701 // Frontend requests current settings
+	SETTINGS_SAVE     = 702 // Frontend sends updated settings
+	SETTINGS_RESPONSE = 703 // Backend sends current settings
 
 	// Inline image message types
-	INLINE_IMAGE_REQUEST   = 150  // Frontend requests inline image fetch
-	INLINE_IMAGE_RESPONSE  = 151  // Backend sends inline image data
+	INLINE_IMAGE_REQUEST  = 150 // Frontend requests inline image fetch
+	INLINE_IMAGE_RESPONSE = 151 // Backend sends inline image data
 
 	// Refresh mode message types
-	REFRESH_MODE_SWITCH    = 501
+	REFRESH_MODE_SWITCH = 501
 
 	// Maximum package size (10MB)
 	MAX_PACKAGE_SIZE = 10485760
@@ -96,55 +96,55 @@ type Bookmark struct {
 
 // BookmarkResponse represents the response structure for bookmark operations
 type BookmarkResponse struct {
-	Success  bool      `json:"success"`
+	Success   bool       `json:"success"`
 	Bookmarks []Bookmark `json:"bookmarks"`
-	Error    string    `json:"error,omitempty"`
+	Error     string     `json:"error,omitempty"`
 }
 
 // Certificate represents a client certificate for Gemini authentication
 type Certificate struct {
 	Subject     string `json:"subject"`
 	Issuer      string `json:"issuer"`
-	NotBefore   string `json:"notBefore"`   // ISO 8601 format
-	NotAfter    string `json:"notAfter"`    // ISO 8601 format
-	Fingerprint string `json:"fingerprint"` // SHA-256 fingerprint (used as unique identifier)
+	NotBefore   string `json:"notBefore"`         // ISO 8601 format
+	NotAfter    string `json:"notAfter"`          // ISO 8601 format
+	Fingerprint string `json:"fingerprint"`       // SHA-256 fingerprint (used as unique identifier)
 	CertPEM     string `json:"certPEM,omitempty"` // PEM encoded certificate
 	KeyPEM      string `json:"keyPEM,omitempty"`  // PEM encoded private key
 }
 
 // CertificateResponse represents the response structure for certificate operations
 type CertificateResponse struct {
-	Success      bool            `json:"success"`
-	Certificates []Certificate   `json:"certificates"`
-	Associations map[string]string `json:"associations"`  // Removed omitempty to ensure empty maps are sent
-	Error        string          `json:"error,omitempty"`
+	Success      bool              `json:"success"`
+	Certificates []Certificate     `json:"certificates"`
+	Associations map[string]string `json:"associations"` // Removed omitempty to ensure empty maps are sent
+	Error        string            `json:"error,omitempty"`
 }
 
 // InputRequest represents a request for user input from the frontend
 type InputRequest struct {
-	Prompt   string `json:"prompt"`
-	Sensitive bool  `json:"sensitive"`
-	URL      string `json:"url"`
+	Prompt    string `json:"prompt"`
+	Sensitive bool   `json:"sensitive"`
+	URL       string `json:"url"`
 }
 
 // CertificateSelectRequest represents a request for certificate selection from the frontend
 type CertificateSelectRequest struct {
-	Prompt   string        `json:"prompt"`
-	Meta     string        `json:"meta"`
-	URL      string        `json:"url"`
+	Prompt       string        `json:"prompt"`
+	Meta         string        `json:"meta"`
+	URL          string        `json:"url"`
 	Certificates []Certificate `json:"certificates,omitempty"`
 }
 
 // Settings represents the application settings
 type Settings struct {
-	Padding     int       `json:"padding"`
-	TextSize    int       `json:"textSize"`
-	Homepage    string    `json:"homepage,omitempty"`
-	Bookmarks   []Bookmark `json:"bookmarks"`
-	BypassedURLs []string  `json:"bypassedUrls,omitempty"`
-	ProxyURL    string    `json:"proxyUrl"`
-	ProxyPort   int       `json:"proxyPort"`
-	RefreshMode string    `json:"refreshMode,omitempty"`  // Refresh mode setting: "auto", "quality", "fast", "ufast", "animate", or "ui"
+	Padding      int        `json:"padding"`
+	TextSize     int        `json:"textSize"`
+	Homepage     string     `json:"homepage,omitempty"`
+	Bookmarks    []Bookmark `json:"bookmarks"`
+	BypassedURLs []string   `json:"bypassedUrls,omitempty"`
+	ProxyURL     string     `json:"proxyUrl"`
+	ProxyPort    int        `json:"proxyPort"`
+	RefreshMode  string     `json:"refreshMode,omitempty"` // Refresh mode setting: "auto", "quality", "fast", "ufast", "animate", or "ui"
 }
 
 // SettingsResponse represents the response structure for settings operations
@@ -156,7 +156,7 @@ type SettingsResponse struct {
 
 // CertificateSelectResponse represents the response with selected certificate fingerprint from frontend
 type CertificateSelectResponse struct {
-	URL          string `json:"url"`
+	URL           string `json:"url"`
 	CertificateId string `json:"certificateId"` // This now contains the certificate fingerprint
 }
 
@@ -175,7 +175,6 @@ type BackendReplier struct {
 	fd     int
 	locked bool
 }
-
 
 // CertificateManager handles certificate operations
 type CertificateManager struct {
@@ -316,7 +315,6 @@ func (replier *BackendReplier) SendMessage(msgType uint32, content string) error
 
 	return nil
 }
-
 
 // NewCertificateManager creates a new certificate manager
 func NewCertificateManager() (*CertificateManager, error) {
@@ -685,11 +683,6 @@ func (cm *CertificateManager) RemoveCertificate(fingerprint string) error {
 	return nil
 }
 
-
-
-
-
-
 // GeminiResponse represents the response structure sent to the frontend
 type GeminiResponse struct {
 	Success bool   `json:"success"`
@@ -703,7 +696,6 @@ type SettingsManager struct {
 	settingsFile string
 	mutex        sync.RWMutex
 }
-
 
 // getDefaultBookmarks returns the default bookmarks embedded in the application
 func getDefaultBookmarks() []Bookmark {
@@ -729,19 +721,19 @@ func getDefaultBookmarks() []Bookmark {
 			DateAdded: "2026-02-07T19:25:48Z",
 		},
 		{
-			Title: "Newswaffle",
-			URL: "gemini://gemi.dev/cgi-bin/waffle.cgi",
-			DateAdded: "2026-02-07T19:25:48Z",	
+			Title:     "Newswaffle",
+			URL:       "gemini://gemi.dev/cgi-bin/waffle.cgi",
+			DateAdded: "2026-02-07T19:25:48Z",
 		},
 		{
-			Title: "CAPCOM",
-			URL: "gemini://gemini.circumlunar.space/capcom/",
-			DateAdded: "2026-02-07T19:25:48Z",	
+			Title:     "CAPCOM",
+			URL:       "gemini://gemini.circumlunar.space/capcom/",
+			DateAdded: "2026-02-07T19:25:48Z",
 		},
 		{
-			Title: "Kennedy Search Engine",
-			URL: "gemini://kennedy.gemi.dev",
-			DateAdded: "2026-02-07T19:25:48Z",	
+			Title:     "Kennedy Search Engine",
+			URL:       "gemini://kennedy.gemi.dev",
+			DateAdded: "2026-02-07T19:25:48Z",
 		},
 	}
 }
@@ -822,11 +814,11 @@ func (sm *SettingsManager) SaveSettings(settings Settings) error {
 }
 
 // GeminiBackend handles Gemini protocol requests
-type GeminiBackend struct{
+type GeminiBackend struct {
 	certificateManager *CertificateManager
 	settingsManager    *SettingsManager
-	bypassedURLs       map[string]bool  // URLs that have been bypassed for certificate validation
-	bypassedURLsMutex  sync.RWMutex     // Mutex to protect bypassedURLs map
+	bypassedURLs       map[string]bool // URLs that have been bypassed for certificate validation
+	bypassedURLsMutex  sync.RWMutex    // Mutex to protect bypassedURLs map
 }
 
 // HandleMessage processes messages from the QML frontend
@@ -932,7 +924,8 @@ func (b *GeminiBackend) handleAddBookmark(replier *BackendReplier, content strin
 	}
 
 	response := BookmarkResponse{
-		Success: true,
+		Success:   true,
+		Bookmarks: settings.Bookmarks,
 	}
 	b.sendBookmarkResponse(replier, response)
 }
@@ -976,7 +969,7 @@ func (b *GeminiBackend) handleRemoveBookmark(replier *BackendReplier, url string
 		// Even if bookmark not found, send back the current list of bookmarks
 		// to ensure frontend has the correct state
 		response := BookmarkResponse{
-			Success:   true,  // Operation completed successfully even if bookmark wasn't found
+			Success:   true, // Operation completed successfully even if bookmark wasn't found
 			Bookmarks: settings.Bookmarks,
 			Error:     fmt.Sprintf("Bookmark not found for URL: %s", url),
 		}
@@ -1151,7 +1144,7 @@ func (b *GeminiBackend) handleRemoveCertificate(replier *BackendReplier, content
 	// Send updated associations as well
 	assocResponse := struct {
 		Success      bool              `json:"success"`
-		Associations map[string]string `json:"associations"`  // Removed omitempty to ensure empty maps are sent
+		Associations map[string]string `json:"associations"` // Removed omitempty to ensure empty maps are sent
 		Error        string            `json:"error,omitempty"`
 	}{
 		Success:      true,
@@ -1362,9 +1355,9 @@ func (b *GeminiBackend) handleListCertificateAssociations(replier *BackendReplie
 	// We need to send the associations in a way the frontend can understand
 	// The frontend expects a map where keys are domains and values are certificate IDs
 	type AssociationsResponse struct {
-		Success      bool            `json:"success"`
+		Success      bool              `json:"success"`
 		Associations map[string]string `json:"associations,omitempty"`
-		Error        string          `json:"error,omitempty"`
+		Error        string            `json:"error,omitempty"`
 	}
 
 	assocResponse := AssociationsResponse{
@@ -1510,7 +1503,6 @@ func (b *GeminiBackend) handleGetSettings(replier *BackendReplier) {
 	}
 	b.sendSettingsResponse(replier, response)
 }
-
 
 // sendSettingsResponse sends a settings response to the frontend
 func (b *GeminiBackend) sendSettingsResponse(replier *BackendReplier, response SettingsResponse) {
