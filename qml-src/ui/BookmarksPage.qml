@@ -122,11 +122,6 @@ Rectangle {
                 leftPadding: 20 * scaleFactor
                 rightPadding: 20 * scaleFactor
                 topPadding: 20 * scaleFactor
-
-                // Bookmarks will be populated dynamically
-                Component.onCompleted: {
-                    populateBookmarksList()
-                }
             }
         }
     }

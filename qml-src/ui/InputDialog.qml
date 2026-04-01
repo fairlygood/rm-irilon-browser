@@ -35,7 +35,7 @@ Rectangle {
     Rectangle {
         id: dialogRect
         z: 1
-        width: Math.min(parent.width * 0.8, 400 * scaleFactor)
+        width: Math.min(parent.width * 0.9, 600 * scaleFactor)
         height: 200 * scaleFactor
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2

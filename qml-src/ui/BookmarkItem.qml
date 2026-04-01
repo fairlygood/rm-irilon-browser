@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 Rectangle {
     id: bookmarkItem
     width: parent.width
-    height: 50 * scaleFactor
+    height: 55 * scaleFactor
     color: "#f9f9f9"
     border.color: "#000000"
     border.width: 2
@@ -24,11 +24,13 @@ Rectangle {
     Row {
         anchors.fill: parent
         anchors.margins: 10 * scaleFactor
+        anchors.bottomMargin: 5 * scaleFactor
         spacing: 10 * scaleFactor
 
         Column {
             width: parent.width - 100 * scaleFactor
             height: parent.height
+            anchors.bottomMargin: 5 * scaleFactor
             spacing: 2 * scaleFactor
 
             Text {
