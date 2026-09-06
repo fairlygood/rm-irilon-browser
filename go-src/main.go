@@ -852,6 +852,12 @@ func (b *GeminiBackend) HandleMessage(replier *BackendReplier, message Message) 
 		b.handleCertificateSelectResponse(replier, message.Content)
 	case CERTIFICATE_BYPASS:
 		b.addBypassedURL(message.Content)
+	case INPUT_RESPONSE:
+		// The user answered an input prompt (status 10/11). Re-issue the
+		// original request with the input appended as a query string.
+		b.handleInputResponse(replier, message.Content)
+	case INPUT_CANCEL:
+		// The user dismissed an input prompt; abort the pending request.
 	case REFRESH_MODE_SWITCH:
 		refreshMode := b.mapRefreshMode(message.Content)
 		refreshModeBytes := make([]byte, 4)
@@ -1373,6 +1379,61 @@ func (b *GeminiBackend) handleListCertificateAssociations(replier *BackendReplie
 	err = replier.SendMessage(CERTIFICATE_SELECT_RESPONSE, string(jsonResponse))
 	if err != nil {
 	}
+}
+
+// handleInputResponse handles the frontend's reply to an input request
+// (INPUT_RESPONSE, type 402). Per the Gemini specification, after a server
+// returns status 10 (input required) or 11 (sensitive input required), the
+// client re-issues the request with the user's input URL-encoded and appended
+// to the URL as a query string.
+func (b *GeminiBackend) handleInputResponse(replier *BackendReplier, content string) {
+	var resp struct {
+		URL   string `json:"url"`
+		Input string `json:"input"`
+	}
+	if err := json.Unmarshal([]byte(content), &resp); err != nil {
+		return // Malformed reply; nothing sensible to do
+	}
+	if resp.URL == "" {
+		return
+	}
+
+	inputURL, err := buildGeminiInputURL(resp.URL, resp.Input)
+	if err != nil {
+		b.sendError(replier, resp.URL, fmt.Sprintf("Failed to build input URL: %v", err))
+		return
+	}
+
+	b.fetchGeminiPageWithRedirectCount(replier, inputURL, 0)
+}
+
+// buildGeminiInputURL appends user input to a Gemini URL as a query string.
+// Any query or fragment already present on the prompt URL is replaced, which
+// matches how Gemini servers advertise input endpoints (status 10/11 URLs
+// normally carry no meaningful query of their own).
+func buildGeminiInputURL(baseURL, userInput string) (string, error) {
+	parsedURL, err := url.Parse(baseURL)
+	if err != nil {
+		return "", fmt.Errorf("invalid URL: %v", err)
+	}
+	if parsedURL.Host == "" {
+		return "", fmt.Errorf("invalid URL (no host): %s", baseURL)
+	}
+
+	// Percent-encode the input for safe inclusion in a query string
+	// (url.QueryEscape uses '+' for spaces; the Gemini spec expects %20).
+	encoded := url.QueryEscape(userInput)
+	encoded = strings.ReplaceAll(encoded, "+", "%20")
+
+	parsedURL.RawQuery = encoded
+	parsedURL.Fragment = ""
+	if encoded == "" {
+		// Preserve an explicit trailing '?' so an empty submission still
+		// results in a request with an (empty) query component.
+		parsedURL.ForceQuery = true
+	}
+
+	return parsedURL.String(), nil
 }
 
 // sendInputRequest sends an input request to the frontend
