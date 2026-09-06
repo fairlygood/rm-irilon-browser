@@ -119,9 +119,14 @@ Rectangle {
                     if (response.success) {
                         currentUrl = response.url
 
-                        // Add homepage or loaded page to history if it's not already there
-                        // This handles the case where pages are loaded directly (e.g., homepage)
-                        if (history.length === 0 || history[history.length - 1] !== response.url) {
+                        // Record the loaded page unless it's the page already at the
+                        // current history slot. Back/forward/home/refresh re-fetch a
+                        // URL that is already positioned in the stack; treating such
+                        // a response as a brand-new page would append a duplicate
+                        // entry and silently truncate the forward history.
+                        var atCurrentSlot = historyIndex >= 0 && historyIndex < history.length &&
+                                            history[historyIndex] === response.url
+                        if (!atCurrentSlot && (history.length === 0 || history[history.length - 1] !== response.url)) {
                             // Remove forward history if we're navigating to a new URL
                             if (historyIndex < history.length - 1 && historyIndex >= 0) {
                                 history = history.slice(0, historyIndex + 1)
