@@ -17,24 +17,12 @@ Rectangle {
     property bool isBookmarked: false
     property bool showSettingsPage: false
     property bool showBookmarksPage: false
-    property var history: []
-    property int historyIndex: -1
+    // History is owned by the root window (main.qml); only the computed
+    // back/forward availability is needed down here for the URL bar buttons.
+    property bool canGoBack: false
+    property bool canGoForward: false
     property string currentPageContent: "Welcome to the Gemini Browser!\n\nEnter a Gemini URL above to begin browsing."
     property var lastClickedElement: null  // Store the link element that was clicked for inline image insertion
-
-    onHistoryChanged: {
-        // Propagate history change to parent, but avoid loops
-        if (parent && JSON.stringify(parent.history) !== JSON.stringify(history)) {
-            parent.history = history
-        }
-    }
-
-    onHistoryIndexChanged: {
-        // Propagate historyIndex change to parent, but avoid loops
-        if (parent && parent.historyIndex !== historyIndex) {
-            parent.historyIndex = historyIndex
-        }
-    }
 
     // Returns true when a URL may be navigated to. HTTP(S) URLs are only
     // navigable when a proxy is configured; otherwise the http-link dialog is
@@ -213,8 +201,8 @@ Rectangle {
             scaleFactor: parent.scaleFactor || 2.0
             currentUrl: browserWindow.currentUrl || ""
             showSettingsPage: browserWindow.showSettingsPage || false
-            canGoBack: browserWindow.historyIndex > 0
-            canGoForward: browserWindow.historyIndex < browserWindow.history.length - 1
+            canGoBack: browserWindow.canGoBack
+            canGoForward: browserWindow.canGoForward
             isBookmarked: browserWindow.isBookmarked || false
 
             onUrlSubmitted: (url) => {

@@ -3,11 +3,13 @@ import QtQuick.Controls 2.15
 import net.asivery.AppLoad 1.0
 
 Rectangle {
+    id: mainWindow
     width: Screen.width
     height: Screen.height
     color: "#ffffff"
 
-    // Application state properties
+    // Application state properties. History is owned here (single source of
+    // truth); BrowserWindow only receives canGoBack/canGoForward.
     property string currentUrl: ""
     property real scaleFactor: 2.0
     property int globalTextSize: 18
@@ -21,6 +23,12 @@ Rectangle {
     property var bookmarks: []
     property var history: []
     property int historyIndex: -1
+    // URL of the page currently displayed (updated only when a page actually
+    // loads); used to restore the URL bar after a failed navigation.
+    property string lastShownUrl: ""
+    // Set when a brand-new URL is optimistically appended to history, so a
+    // failed fetch for it can be rolled back again.
+    property string pendingNewEntry: ""
 
     onCurrentUrlChanged: {
         // Update isBookmarked status based on current URL
@@ -35,18 +43,6 @@ Rectangle {
         }
         isBookmarked = bookmarked;
         browserWindow.isBookmarked = bookmarked;
-    }
-
-    onHistoryChanged: {
-        if (JSON.stringify(browserWindow.history) !== JSON.stringify(history)) {
-            browserWindow.history = history
-        }
-    }
-
-    onHistoryIndexChanged: {
-        if (browserWindow.historyIndex !== historyIndex) {
-            browserWindow.historyIndex = historyIndex
-        }
     }
 
     onBookmarksChanged: {
@@ -140,10 +136,38 @@ Rectangle {
                         browserWindow.currentUrl = response.url
                         browserWindow.updateContent(response.content || "No content available")
                         // The ContentRenderer in ContentArea will handle the content display
+                        // Mark the successfully displayed page and end any pending
+                        // optimistic history entry for this navigation attempt.
+                        pendingNewEntry = ""
+                        lastShownUrl = response.url
                     } else {
                         // Show error dialog with the error message
                         errorDialog.errorMessage = response.error || "Unknown error"
                         errorDialog.visible = true
+
+                        // A failed page navigation must not leave the URL bar on a
+                        // page that isn't shown. Restore the last successfully
+                        // displayed page and repair the history state.
+                        if (response.url && response.url === browserWindow.currentUrl) {
+                            // Drop the optimistic entry appended for this attempt
+                            if (pendingNewEntry === response.url) {
+                                pendingNewEntry = ""
+                                if (history.length > 0 &&
+                                    history[history.length - 1] === response.url) {
+                                    history.pop()
+                                }
+                            }
+                            browserWindow.currentUrl = lastShownUrl
+                            currentUrl = lastShownUrl
+                            if (history.length === 0) {
+                                historyIndex = -1
+                            } else {
+                                var shownIndex = history.indexOf(lastShownUrl)
+                                if (shownIndex >= 0) {
+                                    historyIndex = shownIndex
+                                }
+                            }
+                        }
                     }
                 } else if (type === 301) {  // BOOKMARK_RESPONSE
                     var response = JSON.parse(contents)
@@ -236,8 +260,8 @@ Rectangle {
         proxyPort: parent.proxyPort
         isBookmarked: parent.isBookmarked
         showSettingsPage: false
-        history: parent.history
-        historyIndex: parent.historyIndex
+        canGoBack: mainWindow.historyIndex > 0
+        canGoForward: mainWindow.historyIndex < mainWindow.history.length - 1
 
         Component.onCompleted: {
         }
@@ -256,8 +280,9 @@ Rectangle {
         }
 
         onUrlChanged: (url) => {
-            // Handle URL change
-            currentUrl = url
+            // The URL bar shows the target immediately (optimistically); the
+            // root currentUrl only moves when a page actually loads.
+            browserWindow.currentUrl = url
             // Skip history for image URLs - they're not pages
             var isImage = isImageUrl(url);
             if (isImage) {
@@ -266,8 +291,8 @@ Rectangle {
                 // Check if this URL change is due to navigation (URL already exists in history)
                 var isNavigation = false;
                 var navigationIndex = -1;
-                for (var i = 0; i < history.length; i++) {
-                    if (history[i] === url) {
+                for (var i = 0; i < mainWindow.history.length; i++) {
+                    if (mainWindow.history[i] === url) {
                         isNavigation = true;
                         navigationIndex = i;
                         break;
@@ -276,14 +301,16 @@ Rectangle {
 
                 if (isNavigation) {
                     // Update historyIndex to point to the navigated URL
-                    historyIndex = navigationIndex;
-                } else if (history.length === 0 || history[history.length - 1] !== url) {
+                    mainWindow.historyIndex = navigationIndex;
+                } else if (mainWindow.history.length === 0 || mainWindow.history[mainWindow.history.length - 1] !== url) {
                     // Remove forward history if we're navigating to a new URL
-                    if (historyIndex < history.length - 1 && historyIndex >= 0) {
-                        history = history.slice(0, historyIndex + 1)
+                    if (mainWindow.historyIndex < mainWindow.history.length - 1 && mainWindow.historyIndex >= 0) {
+                        mainWindow.history = mainWindow.history.slice(0, mainWindow.historyIndex + 1)
                     }
-                    history.push(url)
-                    historyIndex = history.length - 1
+                    mainWindow.history.push(url)
+                    mainWindow.historyIndex = mainWindow.history.length - 1
+                    // Remember the optimistic entry so a failed fetch can roll it back
+                    mainWindow.pendingNewEntry = url
                 }
             }
             // Send message to backend to fetch the page
@@ -292,12 +319,10 @@ Rectangle {
 
         onNavigateBack: {
             // Handle back navigation
-            if (historyIndex > 0) {
-                historyIndex--;
-                var previousUrl = history[historyIndex];
-                currentUrl = previousUrl;
+            if (mainWindow.historyIndex > 0) {
+                mainWindow.historyIndex--;
+                var previousUrl = mainWindow.history[mainWindow.historyIndex];
                 browserWindow.currentUrl = previousUrl;
-                browserWindow.historyIndex = historyIndex;
                 // Send message to backend to fetch the page
                 endpoint.sendMessage(1, previousUrl) // GEMINI_REQUEST
             }
@@ -305,12 +330,10 @@ Rectangle {
 
         onNavigateForward: {
             // Handle forward navigation
-            if (historyIndex < history.length - 1) {
-                historyIndex++;
-                var nextUrl = history[historyIndex];
-                currentUrl = nextUrl;
+            if (mainWindow.historyIndex < mainWindow.history.length - 1) {
+                mainWindow.historyIndex++;
+                var nextUrl = mainWindow.history[mainWindow.historyIndex];
                 browserWindow.currentUrl = nextUrl;
-                browserWindow.historyIndex = historyIndex;
                 // Send message to backend to fetch the page
                 endpoint.sendMessage(1, nextUrl) // GEMINI_REQUEST
             }
@@ -321,7 +344,7 @@ Rectangle {
             if (homepageUrl) {
                 // An http(s) homepage still needs a configured proxy
                 if (!browserWindow.shouldNavigate(homepageUrl)) return
-                currentUrl = homepageUrl;
+                browserWindow.currentUrl = homepageUrl;
                 // Send message to backend to fetch the homepage
                 endpoint.sendMessage(1, homepageUrl) // GEMINI_REQUEST
             } else {
