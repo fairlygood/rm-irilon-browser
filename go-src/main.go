@@ -817,7 +817,7 @@ func (sm *SettingsManager) SaveSettings(settings Settings) error {
 type GeminiBackend struct {
 	certificateManager *CertificateManager
 	settingsManager    *SettingsManager
-	bypassedURLs       map[string]bool // URLs that have been bypassed for certificate validation
+	bypassedURLs       map[string]bool // Hosts that have bypassed certificate validation
 	bypassedURLsMutex  sync.RWMutex    // Mutex to protect bypassedURLs map
 }
 
@@ -1656,7 +1656,7 @@ func (b *GeminiBackend) fetchGeminiPageWithRedirectCount(replier *BackendReplier
 			// The actual security comes from the user verifying the certificate fingerprint out-of-band
 			// This is the standard approach in the Gemini protocol
 
-			// Check if certificate validation should be bypassed for this URL
+			// Check if certificate validation should be bypassed for this host
 			if b.isBypassedURL(geminiURL) {
 				// Bypass certificate validation
 				return nil
@@ -1902,42 +1902,69 @@ func (b *GeminiBackend) sendCertificateExpired(replier *BackendReplier, url, err
 	}
 }
 
-// addBypassedURL adds a URL to the bypassed URLs list and saves it to settings
+// hostnameOf returns the hostname of a URL string, falling back to the raw
+// string itself when it cannot be parsed (e.g. it is already a bare host).
+func hostnameOf(rawURL string) string {
+	if rawURL == "" {
+		return ""
+	}
+	parsed, err := url.Parse(rawURL)
+	if err != nil || parsed.Hostname() == "" {
+		return rawURL
+	}
+	return parsed.Hostname()
+}
+
+// addBypassedURL records a host whose certificate validation is bypassed.
+// Bypasses are tracked per host (not per exact URL): a certificate belongs to
+// the whole host, so once the user accepts it every path on that host benefits.
+// The entry is also saved to settings so it survives restarts.
 func (b *GeminiBackend) addBypassedURL(url string) {
+	host := hostnameOf(url)
+	if host == "" {
+		return
+	}
+
 	b.bypassedURLsMutex.Lock()
-	defer b.bypassedURLsMutex.Unlock()
-	b.bypassedURLs[url] = true
+	b.bypassedURLs[host] = true
+	b.bypassedURLsMutex.Unlock()
 
 	// Also save to settings for persistence
-	// Load current settings
 	settings, err := b.settingsManager.LoadSettings()
 	if err != nil {
 		return
 	}
 
-	// Check if URL is already in the list
+	// Check if the host is already in the list
 	for _, existingURL := range settings.BypassedURLs {
-		if existingURL == url {
+		if hostnameOf(existingURL) == host {
 			return // Already in the list
 		}
 	}
 
 	// Add to the list and save
-	settings.BypassedURLs = append(settings.BypassedURLs, url)
+	settings.BypassedURLs = append(settings.BypassedURLs, host)
 	if err := b.settingsManager.SaveSettings(settings); err != nil {
 	}
 }
 
-// isBypassedURL checks if a URL is in the bypassed URLs list
-// First checks in-memory cache, then checks settings file
+// isBypassedURL checks if certificate validation is bypassed for the host of
+// the given URL. First checks the in-memory cache, then the settings file
+// (which may contain entries saved as bare hosts or, for backwards
+// compatibility, as full URLs).
 func (b *GeminiBackend) isBypassedURL(url string) bool {
+	host := hostnameOf(url)
+	if host == "" {
+		return false
+	}
+
 	// Check in-memory cache first
 	b.bypassedURLsMutex.RLock()
-	if bypassed, exists := b.bypassedURLs[url]; exists {
-		b.bypassedURLsMutex.RUnlock()
+	bypassed, exists := b.bypassedURLs[host]
+	b.bypassedURLsMutex.RUnlock()
+	if exists {
 		return bypassed
 	}
-	b.bypassedURLsMutex.RUnlock()
 
 	// Check settings file
 	settings, err := b.settingsManager.LoadSettings()
@@ -1946,10 +1973,10 @@ func (b *GeminiBackend) isBypassedURL(url string) bool {
 	}
 
 	for _, bypassedURL := range settings.BypassedURLs {
-		if bypassedURL == url {
+		if hostnameOf(bypassedURL) == host {
 			// Add to in-memory cache for faster future checks
 			b.bypassedURLsMutex.Lock()
-			b.bypassedURLs[url] = true
+			b.bypassedURLs[host] = true
 			b.bypassedURLsMutex.Unlock()
 			return true
 		}

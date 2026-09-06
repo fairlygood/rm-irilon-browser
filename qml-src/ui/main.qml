@@ -213,7 +213,9 @@ Rectangle {
                         endpoint.sendMessage(1, currentUrl) // GEMINI_REQUEST
                     }
                 } else if (type === 610) {  // CERTIFICATE_EXPIRED
-                    // Handle certificate expired - would show CertificateExpiredDialog
+                    var response = JSON.parse(contents)
+                    certificateExpiredDialog.expiredUrl = (response && response.url) || currentUrl || ""
+                    certificateExpiredDialog.visible = true
                 }
             } catch (e) {
             }
@@ -447,6 +449,21 @@ Rectangle {
         id: httpLinkDialog
         scaleFactor: parent.scaleFactor
         visible: false
+    }
+
+    // Certificate expired dialog
+    CertificateExpiredDialog {
+        id: certificateExpiredDialog
+        scaleFactor: parent.scaleFactor
+        visible: false
+
+        onCertificateBypassed: (url) => {
+            certificateExpiredDialog.visible = false
+            // Tell the backend to bypass certificate validation for this host
+            endpoint.sendMessage(611, url) // CERTIFICATE_BYPASS
+            // Re-request the page so it loads with the bypassed certificate
+            endpoint.sendMessage(1, url)   // GEMINI_REQUEST
+        }
     }
 
     // Error dialog
