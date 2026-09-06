@@ -67,9 +67,6 @@ const (
 	INLINE_IMAGE_REQUEST  = 150 // Frontend requests inline image fetch
 	INLINE_IMAGE_RESPONSE = 151 // Backend sends inline image data
 
-	// Refresh mode message types
-	REFRESH_MODE_SWITCH = 501
-
 	// Maximum package size (10MB)
 	MAX_PACKAGE_SIZE = 10485760
 )
@@ -143,7 +140,6 @@ type Settings struct {
 	BypassedURLs []string   `json:"bypassedUrls,omitempty"`
 	ProxyURL     string     `json:"proxyUrl"`
 	ProxyPort    int        `json:"proxyPort"`
-	RefreshMode  string     `json:"refreshMode,omitempty"` // Refresh mode setting: "auto", "quality", "fast", "ufast", "animate", or "ui"
 }
 
 // SettingsResponse represents the response structure for settings operations
@@ -857,11 +853,6 @@ func (b *GeminiBackend) HandleMessage(replier *BackendReplier, message Message) 
 		b.handleInputResponse(replier, message.Content)
 	case INPUT_CANCEL:
 		// The user dismissed an input prompt; abort the pending request.
-	case REFRESH_MODE_SWITCH:
-		refreshMode := b.mapRefreshMode(message.Content)
-		refreshModeBytes := make([]byte, 4)
-		binary.LittleEndian.PutUint32(refreshModeBytes, uint32(refreshMode))
-		replier.SendMessage(5, string(refreshModeBytes))
 	case SETTINGS_GET:
 		b.handleGetSettings(replier)
 	case SETTINGS_SAVE:
@@ -1320,31 +1311,6 @@ func (b *GeminiBackend) sendCertificateResponse(replier *BackendReplier, respons
 	}
 }
 
-// mapRefreshMode maps string refresh mode values to integer constants for qtfb
-// Based on constants in rm-appload/src/qtfb/common.h:
-// REFRESH_MODE_UFAST = 0
-// REFRESH_MODE_FAST = 1
-// REFRESH_MODE_ANIMATE = 2
-// REFRESH_MODE_CONTENT = 3
-// REFRESH_MODE_UI = 4
-func (b *GeminiBackend) mapRefreshMode(mode string) int {
-	switch strings.TrimSpace(strings.ToLower(mode)) {
-	case "quality":
-		return 3 // REFRESH_MODE_CONTENT
-	case "fast":
-		return 1 // REFRESH_MODE_FAST
-	case "animate":
-		return 2 // REFRESH_MODE_ANIMATE
-	case "ui":
-		return 4 // REFRESH_MODE_UI
-	case "ufast":
-		return 0 // REFRESH_MODE_UFAST
-	default:
-		// Default to UI mode for unrecognized values
-		return 4 // REFRESH_MODE_UI
-	}
-}
-
 // handleListCertificateAssociations handles listing all certificate associations
 func (b *GeminiBackend) handleListCertificateAssociations(replier *BackendReplier) {
 	associations, err := b.certificateManager.ListAssociations()
@@ -1513,7 +1479,6 @@ func (b *GeminiBackend) handleSaveSettings(replier *BackendReplier, content stri
 	currentSettings.Homepage = newSettings.Homepage
 	currentSettings.ProxyURL = newSettings.ProxyURL
 	currentSettings.ProxyPort = newSettings.ProxyPort
-	currentSettings.RefreshMode = newSettings.RefreshMode
 
 	// Save updated settings
 	if err := b.settingsManager.SaveSettings(currentSettings); err != nil {
@@ -1554,7 +1519,6 @@ func (b *GeminiBackend) handleGetSettings(replier *BackendReplier) {
 		BypassedURLs: settings.BypassedURLs,
 		ProxyURL:     settings.ProxyURL,
 		ProxyPort:    settings.ProxyPort,
-		RefreshMode:  settings.RefreshMode,
 	}
 
 	response := SettingsResponse{

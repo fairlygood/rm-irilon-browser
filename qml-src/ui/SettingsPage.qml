@@ -13,7 +13,6 @@ Rectangle {
     property int textSize: 18
     property string proxyUrl: ""
     property int proxyPort: 0
-    property string refreshMode: "quality"
     property string currentTab: "general"  // Default tab
     property var certificates: []
     property var certificateAssociations: ({})
@@ -58,17 +57,6 @@ Rectangle {
         if (settings.proxyPort !== undefined) {
             proxyPort = settings.proxyPort
             proxyPortField.text = settings.proxyPort.toString()
-        }
-        if (settings.refreshMode !== undefined) {
-            refreshMode = settings.refreshMode
-            // Update combobox index based on refreshMode value
-            if (settings.refreshMode === "quality") {
-                refreshModeComboBox.currentIndex = 0
-            } else if (settings.refreshMode === "fast") {
-                refreshModeComboBox.currentIndex = 1
-            } else if (settings.refreshMode === "ufast") {
-                refreshModeComboBox.currentIndex = 2
-            }
         }
     }
 
@@ -580,51 +568,6 @@ Rectangle {
                     width: parent.width
                 }
 
-                // Gap before Refresh Mode
-                Rectangle {
-                    width: parent.width
-                    height: scaleFactor
-                    color: "#000000"
-                }
-
-                // Refresh Mode section
-                Text {
-                    text: "Refresh Mode"
-                    font.family: "Maple Mono"
-                    font.pixelSize: Math.round(16 * scaleFactor)
-                    font.bold: true
-                }
-
-                // Refresh mode explanation
-                Text {
-                    text: "Quality mode (quality) provides better visual quality but slower refresh rates. Fast mode (fast) provides quicker refreshes but lower quality. Ultra-fast mode (ufast) is the fastest."
-                    font.family: "Maple Mono"
-                    font.pixelSize: Math.round(12 * scaleFactor)
-                    color: "#666666"
-                    wrapMode: Text.WordWrap
-                    width: parent.width
-                }
-
-                ComboBox {
-                    id: refreshModeComboBox
-                    width: parent.width
-                    height: 40 * scaleFactor
-                    model: ["quality", "fast", "ufast"]
-                    currentIndex: {
-                        if (refreshMode === "quality") return 0
-                        else if (refreshMode === "fast") return 1
-                        else if (refreshMode === "ufast") return 2
-                        else return 0
-                    }
-                    font.family: "Maple Mono"
-                    font.pixelSize: Math.round(14 * scaleFactor)
-                    background: Rectangle {
-                        color: "#ffffff"
-                        border.color: "#000000"
-                        border.width: 2
-                    }
-                }
-
                 // Save button
                 Button {
                     id: saveButton
@@ -654,8 +597,7 @@ Rectangle {
                             "padding": parseInt(paddingField.text) || 60,
                             "textSize": parseInt(textSizeField.text) || 18,
                             "proxyUrl": proxyUrlField.text,
-                            "proxyPort": parseInt(proxyPortField.text) || 0,
-                            "refreshMode": refreshModeComboBox.currentText
+                            "proxyPort": parseInt(proxyPortField.text) || 0
                         }
                         saveSettings(settings)
                         settingsSavedDialog.visible = true

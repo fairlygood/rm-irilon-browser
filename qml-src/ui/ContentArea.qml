@@ -76,7 +76,6 @@ Rectangle {
             settingsPage.textSize = settings.textSize !== undefined ? settings.textSize : 18
             settingsPage.proxyUrl = settings.proxyUrl !== undefined ? settings.proxyUrl : ""
             settingsPage.proxyPort = settings.proxyPort !== undefined ? settings.proxyPort : 0
-            settingsPage.refreshMode = settings.refreshMode !== undefined ? settings.refreshMode : "quality"
             // Update the UI fields with the new settings
             settingsPage.updateSettingsFields(settings)
         }
