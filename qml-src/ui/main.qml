@@ -321,7 +321,7 @@ Rectangle {
                 endpoint.sendMessage(1, homepageUrl) // GEMINI_REQUEST
             } else {
                 // Show homepage not set dialog
-                endpoint.sendMessage(204, "{}") // HOMEPAGE_NOT_SET
+                homepageNotSetDialog.visible = true
             }
         }
 
@@ -464,6 +464,13 @@ Rectangle {
             // Re-request the page so it loads with the bypassed certificate
             endpoint.sendMessage(1, url)   // GEMINI_REQUEST
         }
+    }
+
+    // Homepage not set dialog
+    HomepageNotSetDialog {
+        id: homepageNotSetDialog
+        scaleFactor: parent.scaleFactor
+        visible: false
     }
 
     // Error dialog
