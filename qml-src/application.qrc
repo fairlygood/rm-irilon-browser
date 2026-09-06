@@ -7,7 +7,6 @@
         <file>ui/SettingsPage.qml</file>
         <file>ui/BookmarkItem.qml</file>
         <file>ui/BookmarksPage.qml</file>
-        <file>ui/SettingsSavedDialog.qml</file>
         <file>ui/CertificateItem.qml</file>
         <file>ui/InputDialog.qml</file>
         <file>ui/CertificateSelectDialog.qml</file>
@@ -39,6 +38,5 @@
         <file>fonts/MapleMono-Regular.ttf</file>
         <file>fonts/MapleMono-Bold.ttf</file>
         <file>fonts/MapleMono-Italic.ttf</file>
-        <file>fonts/MapleMono-Bold.ttf</file>
     </qresource>
 </RCC>

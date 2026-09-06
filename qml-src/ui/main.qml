@@ -19,7 +19,6 @@ Rectangle {
     property var bookmarks: []
     property var history: []
     property int historyIndex: -1
-    property string expiredUrl: ""
 
     onCurrentUrlChanged: {
         // Update isBookmarked status based on current URL
@@ -129,17 +128,10 @@ Rectangle {
                             historyIndex = history.length - 1
                         }
 
-                        // Check if this is an image response
-                        if (response.imagePath) {
-                            // Handle image content by creating special content that displays the image
-                            var imageContent = "image/" + (response.mimeType || "unknown") + "\n" + response.imagePath;
-                            browserWindow.currentUrl = response.url
-                            browserWindow.updateContent(imageContent)
-                        } else {
-                            // Update content in ContentArea through BrowserWindow for text content
-                            browserWindow.currentUrl = response.url
-                            browserWindow.updateContent(response.content || "No content available")
-                        }
+                        // Update content in ContentArea through BrowserWindow
+                        // (note: image responses arrive separately as type 151)
+                        browserWindow.currentUrl = response.url
+                        browserWindow.updateContent(response.content || "No content available")
                         // The ContentRenderer in ContentArea will handle the content display
                     } else {
                         // Show error dialog with the error message
@@ -232,7 +224,6 @@ Rectangle {
         homepageUrl: parent.homepageUrl
         isBookmarked: parent.isBookmarked
         showSettingsPage: false
-        expiredUrl: parent.expiredUrl
         history: parent.history
         historyIndex: parent.historyIndex
 

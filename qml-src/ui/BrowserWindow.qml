@@ -17,7 +17,6 @@ Rectangle {
     property bool showBookmarksPage: false
     property var history: []
     property int historyIndex: -1
-    property string expiredUrl: ""
     property string currentPageContent: "Welcome to the Gemini Browser!\n\nEnter a Gemini URL above to begin browsing."
     property var lastClickedElement: null  // Store the link element that was clicked for inline image insertion
 

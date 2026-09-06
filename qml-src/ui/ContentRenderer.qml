@@ -13,9 +13,6 @@ Item {
     property int padding: 30  // Default padding
     property string fontFamily: "Maple Mono"
 
-    // Component cache
-    property var componentCache: ({})
-
     // Model to hold all content items
     ListModel {
         id: contentModel
@@ -347,21 +344,6 @@ Item {
         if (listItems.length > 0) {
             renderListItems(listItems, listType)
         }
-    }
-
-    // Helper function to get or create components
-    function getComponent(path) {
-        if (componentCache[path]) {
-            return componentCache[path]
-        }
-
-        var component = Qt.createComponent(path)
-        if (component.status === 1 || component.status === 2) {
-            componentCache[path] = component
-            return component
-        }
-
-        return null
     }
 
     // Helper function to render list items

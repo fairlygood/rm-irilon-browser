@@ -161,7 +161,7 @@ Rectangle {
         anchors.rightMargin: globalPadding * scaleFactor
         anchors.topMargin: globalPadding
         anchors.bottomMargin: globalPadding
-        visible: !showSettingsPage && !showBookmarksPage && !showBookmarksPage
+        visible: !showSettingsPage && !showBookmarksPage
         clip: true
 
         // Enable touch scrolling
