@@ -12,6 +12,8 @@ Rectangle {
     property int globalPadding: Math.round(60 * scaleFactor)
     property int globalTextSize: 18
     property string homepageUrl: ""
+    property string proxyUrl: ""   // Proxy used to fetch http(s) URLs ("" = none)
+    property int proxyPort: 0
     property bool isBookmarked: false
     property bool showSettingsPage: false
     property bool showBookmarksPage: false
@@ -32,6 +34,22 @@ Rectangle {
         if (parent && parent.historyIndex !== historyIndex) {
             parent.historyIndex = historyIndex
         }
+    }
+
+    // Returns true when a URL may be navigated to. HTTP(S) URLs are only
+    // navigable when a proxy is configured; otherwise the http-link dialog is
+    // shown and navigation is cancelled (so no history entry is made either).
+    function shouldNavigate(url) {
+        if (!url) return false
+        var lower = url.toLowerCase()
+        var isHttp = lower.indexOf("http://") === 0 || lower.indexOf("https://") === 0
+        if (!isHttp) return true
+        var hasProxy = proxyUrl && proxyUrl.length > 0 && proxyPort > 0
+        if (!hasProxy) {
+            httpLinkBlocked(url)
+            return false
+        }
+        return true
     }
 
     // Function to resolve relative URLs
@@ -118,6 +136,7 @@ Rectangle {
     // Signals
     signal close()
     signal urlChanged(string url)
+    signal httpLinkBlocked(string url)
     signal navigateBack()
     signal navigateForward()
     signal navigateHome()
@@ -199,6 +218,7 @@ Rectangle {
             isBookmarked: browserWindow.isBookmarked || false
 
             onUrlSubmitted: (url) => {
+                if (!browserWindow.shouldNavigate(url)) return
                 browserWindow.currentUrl = url
                 browserWindow.urlChanged(url)
             }
@@ -238,6 +258,7 @@ Rectangle {
                         onUrlClicked: (url, element) => {
                 // Resolve relative URLs before navigating
                 var resolvedUrl = browserWindow.resolveUrl(url, browserWindow.currentUrl);
+                if (!browserWindow.shouldNavigate(resolvedUrl)) return
                 // Store the clicked element for inline image insertion
                 browserWindow.lastClickedElement = element;
                 browserWindow.currentUrl = resolvedUrl;  // Update the current URL
@@ -291,7 +312,7 @@ Rectangle {
         scaleFactor: browserWindow.scaleFactor || 2.0
 
         onUrlSubmitted: (url) => {
-                
+            if (!browserWindow.shouldNavigate(url)) return
             browserWindow.currentUrl = url
             browserWindow.urlChanged(url)
         }

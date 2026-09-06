@@ -145,6 +145,9 @@ Rectangle {
             deleteBookmarkRequested(url)
         }
         onOpenBookmark: (url) => {
+            // An http(s) bookmark still needs a configured proxy; if it is
+            // blocked the dialog is shown and the bookmarks page stays open
+            if (!browserWindow.shouldNavigate(url)) return
             // Navigate to the bookmark URL
             browserWindow.currentUrl = url
             browserWindow.urlChanged(url)

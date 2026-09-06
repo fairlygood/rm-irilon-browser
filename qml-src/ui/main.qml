@@ -13,6 +13,8 @@ Rectangle {
     property int globalTextSize: 18
     property int globalPadding: 60
     property string homepageUrl: ""
+    property string proxyUrl: ""   // Proxy used to fetch http(s) URLs ("" = none)
+    property int proxyPort: 0
     property bool isBookmarked: false
     property bool showSettingsPage: false
     property bool showBookmarksPage: false
@@ -159,6 +161,9 @@ Rectangle {
                             browserWindow.homepageUrl = homepageUrl
                             browserWindow.globalTextSize = globalTextSize
                             browserWindow.globalPadding = globalPadding
+                            // Keep a copy of proxy settings for http(s) gating
+                            proxyUrl = response.settings.proxyUrl || ""
+                            proxyPort = response.settings.proxyPort || 0
                             // Update settings in SettingsPage via ContentArea
                             browserWindow.updateSettingsPage(response.settings)
                                                         // Load homepage automatically if available (only on initial load)
@@ -222,6 +227,8 @@ Rectangle {
         globalTextSize: parent.globalTextSize
         globalPadding: parent.globalPadding
         homepageUrl: parent.homepageUrl
+        proxyUrl: parent.proxyUrl
+        proxyPort: parent.proxyPort
         isBookmarked: parent.isBookmarked
         showSettingsPage: false
         history: parent.history
@@ -307,6 +314,8 @@ Rectangle {
         onNavigateHome: {
             // Handle home navigation
             if (homepageUrl) {
+                // An http(s) homepage still needs a configured proxy
+                if (!browserWindow.shouldNavigate(homepageUrl)) return
                 currentUrl = homepageUrl;
                 // Send message to backend to fetch the homepage
                 endpoint.sendMessage(1, homepageUrl) // GEMINI_REQUEST
@@ -393,6 +402,11 @@ Rectangle {
 
         onListAssociationsRequested: {
             endpoint.sendMessage(608, "{}") // CERTIFICATE_LIST_ASSOCIATIONS
+        }
+
+        onHttpLinkBlocked: (url) => {
+            // Explain that http(s) needs a configured proxy instead of navigating
+            httpLinkDialog.visible = true
         }
     }
 
