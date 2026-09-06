@@ -24,8 +24,16 @@ Rectangle {
         populateBookmarksList()
     }
 
+    // Guard to prevent re-entrant calls
+    property bool _isPopulating: false
+
     // Populate the bookmarks list UI
     function populateBookmarksList() {
+        if (_isPopulating) {
+            return
+        }
+        _isPopulating = true
+
         // Clear existing items
         for (var i = bookmarksList.children.length - 1; i >= 0; i--) {
             bookmarksList.children[i].destroy()
@@ -58,6 +66,8 @@ Rectangle {
             var qmlString = 'import QtQuick 2.15; Text { width: parent.width; horizontalAlignment: Text.AlignHCenter; text: "No bookmarks yet"; font.family: "Maple Mono"; font.pixelSize: Math.round(14 * ' + scaleFactor + '); color: "#666666"; topPadding: 40 * ' + scaleFactor + ' }'
             Qt.createQmlObject(qmlString, bookmarksList, "noBookmarks")
         }
+
+        _isPopulating = false
     }
 
     ColumnLayout {
