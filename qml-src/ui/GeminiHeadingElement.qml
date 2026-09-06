@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 Item {
     id: headingElement
 
-    implicitHeight: headingItem.contentHeight + (10 * scaleFactor)
+    implicitHeight: headingTopPad + headingItem.contentHeight + headingBottomPad
 
     property int headingLevel: 1
 
@@ -15,6 +15,25 @@ Item {
     property string fontFamily: "Maple Mono"
     property string text: ""
     property int modelIndex: -1
+
+    // Vertical margins around a heading, in multiples of the body text size
+    // (Lagrange gives headings notably more breathing room than paragraphs).
+    function headingTopEm() {
+        switch (headingLevel) {
+        case 1: return 1.1
+        case 2: return 0.8
+        default: return 0.6
+        }
+    }
+    function headingBottomEm() {
+        switch (headingLevel) {
+        case 1: return 0.45
+        case 2: return 0.3
+        default: return 0.2
+        }
+    }
+    readonly property real headingTopPad: Math.round(headingTopEm() * textSize * scaleFactor)
+    readonly property real headingBottomPad: Math.round(headingBottomEm() * textSize * scaleFactor)
 
     // Signals
     signal clicked(string url)
@@ -27,6 +46,8 @@ Item {
         id: headingItem
         anchors.left: parent.left
         anchors.leftMargin: Math.round(padding * scaleFactor)
+        anchors.top: parent.top
+        anchors.topMargin: headingElement.headingTopPad
         width: parent.width - (Math.round(padding * scaleFactor) * 2)
         text: parent.text
         font.family: parent.fontFamily

@@ -43,7 +43,7 @@ Item {
 
         Text {
             Layout.fillWidth: true
-            Layout.minimumHeight: 25 * listItemElement.scaleFactor
+            Layout.minimumHeight: Math.round(listItemElement.textSize * listItemElement.scaleFactor)
             Layout.alignment: Qt.AlignTop
             text: listItemElement.text
             font.family: listItemElement.fontFamily

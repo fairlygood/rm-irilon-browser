@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 Item {
     id: blockquoteElement
 
-    implicitHeight: blockquoteItem.contentHeight + (10 * scaleFactor)
+    implicitHeight: blockquoteItem.contentHeight
 
     // Properties passed from ContentRenderer
     property real scaleFactor: 2

@@ -37,7 +37,7 @@ Item {
         anchors.right: parent.right
         anchors.leftMargin: Math.round(padding * scaleFactor)
         anchors.rightMargin: Math.round(padding * scaleFactor)
-        spacing: Math.round(10 * scaleFactor)
+        spacing: Math.round(0.08 * textSize * scaleFactor)
 
         // Create list items dynamically
         Repeater {
@@ -58,7 +58,7 @@ Item {
     }
 
     // Update implicit height based on content
-    implicitHeight: listColumn.height + (padding * 2)
+    implicitHeight: listColumn.height
 
     function updateHeight() {
         contentHeight = listColumn.height

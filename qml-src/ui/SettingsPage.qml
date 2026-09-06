@@ -769,7 +769,7 @@ Rectangle {
                         }
 
                         Text {
-                            text: "Version: 1.0.0\n\nA Gemini protocol browser for reMarkable tablets.\n\nBuilt with Qt/QML and Go.\n\nWith thanks to Asivery for Appload and XOVI, without which this would not be possible and also to the creativity and ingenuity of the whole modding community that extends the possibilities of these devices.\n\nInterface font is Maple, by Subframe7536."
+                            text: "Version: 1.0.0\n\nA Gemini protocol browser for reMarkable tablets.\n\nBuilt with Qt/QML and Go.\n\nWith thanks to Asivery for Appload and XOVI, without which this would not be possible and also to the creativity and ingenuity of the whole modding community that extends the possibilities of these devices.\n\nInterface font is Maple, by Subframe7536.\n\nLicence: Irilon is licensed under the MIT License. Copyright (c) 2026 fairlygood.\nThird-party components: Qt (LGPL), Go (BSD-3-Clause), rm-appload (GPL-3.0), XOVI (LGPL-3.0), Maple Mono (SIL Open Font License 1.1)."
                             font.family: "Maple Mono"
                             font.pixelSize: Math.round(14 * scaleFactor)
                             wrapMode: Text.WordWrap

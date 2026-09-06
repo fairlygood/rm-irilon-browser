@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 GeminiBaseElement {
     id: preformattedElement
 
-    implicitHeight: preformattedItem.contentHeight + (10 * scaleFactor)
+    implicitHeight: preTopPad + preformattedItem.contentHeight + preBottomPad
 
     // Properties passed from ContentRenderer
     property real scaleFactor: 2
@@ -13,6 +13,10 @@ GeminiBaseElement {
     property string fontFamily: "Maple Mono"
     property string text: ""
     property int modelIndex: -1
+
+    // A little extra breathing room so the block doesn't touch surrounding text.
+    readonly property real preTopPad: Math.round(0.35 * textSize * scaleFactor)
+    readonly property real preBottomPad: Math.round(0.35 * textSize * scaleFactor)
 
     // Note: clicked and close signals are inherited from GeminiBaseElement
 
@@ -23,6 +27,8 @@ GeminiBaseElement {
         id: preformattedItem
         anchors.left: parent.left
         anchors.leftMargin: Math.round(padding * scaleFactor)
+        anchors.top: parent.top
+        anchors.topMargin: preTopPad
         width: parent.width - (Math.round(padding * scaleFactor) * 2)
         text: parent.text
         font.family: parent.fontFamily

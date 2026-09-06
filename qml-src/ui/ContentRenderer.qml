@@ -13,6 +13,14 @@ Item {
     property int padding: 30  // Default padding
     property string fontFamily: "Maple Mono"
 
+    // Spacing rhythm (in multiples of the body text size), Lagrange-inspired:
+    // - lineSpacingEm is the small gap between consecutive lines/blocks that
+    //   aren't separated by a blank line (paragraph continuations, link lists).
+    // - paraSpacingEm is the amount of vertical space a blank source line adds
+    //   (a real paragraph break), minus the two small gaps around it.
+    property real lineSpacingEm: 0.06
+    property real paraSpacingEm: 0.85
+
     // Model to hold all content items
     ListModel {
         id: contentModel
@@ -22,7 +30,7 @@ Item {
     Column {
         id: contentColumn
         width: parent.width
-        spacing: Math.round((textSize * 0.3) * scaleFactor)
+        spacing: Math.round(lineSpacingEm * textSize * scaleFactor)
 
         // Repeater to render items from the model
         Repeater {
@@ -49,6 +57,17 @@ Item {
                     var modelListType = contentModel.get(idx).listType || "unordered"
                     var modelImagePath = contentModel.get(idx).imagePath || ""
                     var modelMimeType = contentModel.get(idx).mimeType || ""
+
+                    // Blank source lines become paragraph spacing instead of an
+                    // empty text row: reserve paraSpacingEm (minus the two small
+                    // Column gaps that will flank it).
+                    if (modelType === 'text' && modelText === '') {
+                        var blankLinePx = Math.max(1, Math.round((paraSpacingEm - 2 * lineSpacingEm) * textSize * scaleFactor))
+                        element = Qt.createQmlObject(
+                            'import QtQuick 2.15; Item { implicitHeight: ' + blankLinePx + ' }',
+                            delegateItem, "blankLine")
+                        return
+                    }
 
                     var elementComponent
                     switch (modelType) {
