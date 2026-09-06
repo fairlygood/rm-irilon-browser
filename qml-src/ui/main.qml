@@ -104,11 +104,23 @@ Rectangle {
                     // Handle inline image response - insert image at link position
                     var response = JSON.parse(contents)
                     if (response.success && response.isInline && response.imagePath) {
-                        // Append inline image to current content (insert after the link that was clicked)
-                        var inlineContent = "inline/" + (response.mimeType || "unknown") + "\n" + response.imagePath;
-                        browserWindow.appendInlineImage(inlineContent, browserWindow.lastClickedElement, response.url)
-                        // Clear the stored element
-                        browserWindow.lastClickedElement = null
+                        if (browserWindow.lastClickedElement) {
+                            // The image was requested by tapping a link: preview it
+                            // inline, directly beneath that link.
+                            var inlineContent = "inline/" + (response.mimeType || "unknown") + "\n" + response.imagePath;
+                            browserWindow.appendInlineImage(inlineContent, browserWindow.lastClickedElement, response.url)
+                            // Clear the stored element
+                            browserWindow.lastClickedElement = null
+                        } else {
+                            // No link was clicked, so the image itself is the page
+                            // (typed URL, bookmark or redirect). Show it standalone.
+                            pendingNewEntry = ""
+                            lastShownUrl = response.url
+                            currentUrl = response.url
+                            browserWindow.currentUrl = response.url
+                            var imageContent = "image/" + (response.mimeType || "unknown") + "\n" + response.imagePath;
+                            browserWindow.updateContent(imageContent)
+                        }
                     }
                 } else if (type === 101) {  // GEMINI_RESPONSE
                     var response = JSON.parse(contents)
@@ -140,6 +152,8 @@ Rectangle {
                         // optimistic history entry for this navigation attempt.
                         pendingNewEntry = ""
                         lastShownUrl = response.url
+                        // No click context carries over into a freshly loaded page
+                        browserWindow.lastClickedElement = null
                     } else {
                         // Show error dialog with the error message
                         errorDialog.errorMessage = response.error || "Unknown error"

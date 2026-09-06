@@ -8,7 +8,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
-	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
 	"encoding/pem"
@@ -1780,27 +1779,17 @@ func (b *GeminiBackend) fetchGeminiPageWithRedirectCount(replier *BackendReplier
 		b.sendInputRequest(replier, geminiURL, content, true)
 		return
 	case "20":
-		// Success - text/gemini or other content types
-		// Check if the first line indicates an image MIME type
+		// Success - text/gemini or other content types.
+		// Peek at the first line to classify the content without splitting a
+		// possible binary payload into strings.
+		firstLine := firstLineOf(rawContent)
+		if strings.HasPrefix(firstLine, "image/") {
+			b.serveImageContent(replier, geminiURL, firstLine, rawContent)
+			return
+		}
+		// Filter out the MIME type line if present (first line containing ";" or "text/gemini")
 		lines := strings.Split(content, "\n")
 		if len(lines) > 0 {
-			firstLine := strings.TrimSpace(lines[0])
-			if strings.HasPrefix(firstLine, "image/") {
-				// Handle image content with raw binary data
-				// Find the position of the first newline to separate MIME type from data
-				firstNewline := bytes.IndexByte(rawContent, '\n')
-				if firstNewline != -1 && firstNewline < len(rawContent)-1 {
-					imageData := rawContent[firstNewline+1:]
-					// Convert to base64 for safe transmission
-					encodedData := base64.StdEncoding.EncodeToString(imageData)
-					b.handleImageContent(replier, geminiURL, firstLine, encodedData)
-				} else {
-					// No data after MIME type line
-					b.handleImageContent(replier, geminiURL, firstLine, "")
-				}
-				return
-			}
-			// Filter out MIME type line if present (first line containing ";" or "text/gemini")
 			if strings.Contains(lines[0], ";") || strings.Contains(strings.ToLower(lines[0]), "text/gemini") {
 				// Remove the first line (MIME type)
 				content = strings.Join(lines[1:], "\n")
@@ -1809,30 +1798,16 @@ func (b *GeminiBackend) fetchGeminiPageWithRedirectCount(replier *BackendReplier
 		b.sendResponse(replier, geminiURL, content)
 	case "21":
 		// Success - other MIME type (including images)
-		// Check if this is an image by examining the first line (MIME type)
-		lines := strings.Split(content, "\n")
-		if len(lines) > 0 {
-			mimeType := strings.TrimSpace(lines[0])
+		mimeType := firstLineOf(rawContent)
 
-			// Check if this is an image MIME type
-			if strings.HasPrefix(mimeType, "image/") {
-				// Handle image content with raw binary data
-				// Find the position of the first newline to separate MIME type from data
-				firstNewline := bytes.IndexByte(rawContent, '\n')
-				if firstNewline != -1 && firstNewline < len(rawContent)-1 {
-					imageData := rawContent[firstNewline+1:]
-					// Convert to base64 for safe transmission
-					encodedData := base64.StdEncoding.EncodeToString(imageData)
-					b.handleImageContent(replier, geminiURL, mimeType, encodedData)
-				} else {
-					// No data after MIME type line
-					b.handleImageContent(replier, geminiURL, mimeType, "")
-				}
-				return
-			}
+		// Check if this is an image MIME type
+		if strings.HasPrefix(mimeType, "image/") {
+			b.serveImageContent(replier, geminiURL, mimeType, rawContent)
+			return
 		}
-		// For other binary content, send a notification
-		b.sendResponse(replier, geminiURL, "[Binary content - not displaying]")
+		// For other binary content, send a notification (specific message for
+		// known types this device cannot display)
+		b.sendResponse(replier, geminiURL, unsupportedContentMessage(mimeType))
 	case "60":
 		// Client certificate required
 		b.sendCertificateSelectRequest(replier, geminiURL, "Client certificate required", content)
@@ -1996,9 +1971,51 @@ type ImageResponse struct {
 	IsInline bool `json:"isInline"`
 }
 
+// firstLineOf returns the trimmed first line of a raw response body without
+// converting the whole body to a string (important for binary payloads).
+func firstLineOf(raw []byte) string {
+	end := bytes.IndexByte(raw, '\n')
+	if end < 0 {
+		end = len(raw)
+	}
+	// Strip a trailing carriage return if the server used CRLF line endings.
+	return strings.TrimSpace(strings.TrimSuffix(string(raw[:end]), "\r"))
+}
+
+// unsupportedContentMessage returns a user-facing message for MIME types the
+// device cannot display. Known families get a specific explanation.
+func unsupportedContentMessage(mimeType string) string {
+	switch {
+	case strings.HasPrefix(mimeType, "audio/"):
+		return fmt.Sprintf("Audio content (%s) is not supported on this device.", mimeType)
+	case strings.HasPrefix(mimeType, "video/"):
+		return fmt.Sprintf("Video content (%s) is not supported on this device.", mimeType)
+	case mimeType == "application/pdf":
+		return "PDF documents cannot be displayed on this device."
+	case strings.HasPrefix(mimeType, "application/zip") ||
+		(strings.HasPrefix(mimeType, "application/x-") && strings.Contains(mimeType, "compress")) ||
+		strings.Contains(mimeType, "archive"):
+		return fmt.Sprintf("Archive content (%s) cannot be opened on this device.", mimeType)
+	default:
+		return "[Binary content - not displaying]"
+	}
+}
+
+// serveImageContent extracts binary image data (everything after the MIME
+// type line) and hands it to handleImageContent as raw bytes.
+func (b *GeminiBackend) serveImageContent(replier *BackendReplier, geminiURL, mimeType string, rawContent []byte) {
+	firstNewline := bytes.IndexByte(rawContent, '\n')
+	if firstNewline != -1 && firstNewline < len(rawContent)-1 {
+		b.handleImageContent(replier, geminiURL, mimeType, rawContent[firstNewline+1:])
+		return
+	}
+	// No data after the MIME type line
+	b.handleImageContent(replier, geminiURL, mimeType, nil)
+}
+
 // handleImageContent processes binary image content by saving it to a temporary file
 // and sending a reference to the frontend
-func (b *GeminiBackend) handleImageContent(replier *BackendReplier, geminiURL, mimeType, imageData string) {
+func (b *GeminiBackend) handleImageContent(replier *BackendReplier, geminiURL, mimeType string, rawData []byte) {
 	// Create a temporary file for the image
 	tmpFile, err := ioutil.TempFile("", "gemini-image-*.tmp")
 	if err != nil {
@@ -2007,19 +2024,9 @@ func (b *GeminiBackend) handleImageContent(replier *BackendReplier, geminiURL, m
 	}
 	defer tmpFile.Close()
 
-	// For images, the imageData is base64 encoded
-	if imageData != "" {
-		// Decode base64 data
-		decodedData, err := base64.StdEncoding.DecodeString(imageData)
-		if err != nil {
-			os.Remove(tmpFile.Name()) // Clean up the temp file
-			b.sendImageError(replier, geminiURL, fmt.Sprintf("Failed to decode image data: %v", err))
-			return
-		}
-
-		// Write decoded binary data to file
-		_, err = tmpFile.Write(decodedData)
-		if err != nil {
+	// Write the raw binary data straight to the file (no base64 round trip)
+	if len(rawData) > 0 {
+		if _, err := tmpFile.Write(rawData); err != nil {
 			os.Remove(tmpFile.Name()) // Clean up the temp file
 			b.sendImageError(replier, geminiURL, fmt.Sprintf("Failed to write image data: %v", err))
 			return
