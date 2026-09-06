@@ -4,6 +4,44 @@ echo "============================="
 echo "Building Irilon Browser..."
 echo "============================="
 
+# ---------------------------------------------------------------------------
+# Release versioning.
+#
+# Prefer an exact semver tag on HEAD (e.g. v1.2.3) so release artifacts match
+# the About-page version and are directly usable by Vellum (pkgver = tag minus
+# the leading "v"). If HEAD is not exactly on such a tag, fall back to a
+# pre-release snapshot of the nearest tag (e.g. 1.0.1_rc3) rather than a bare
+# date, so versions always sort meaningfully. Override with:
+#     RELEASE_VERSION=1.2.3 ./build.sh 4
+# ---------------------------------------------------------------------------
+get_release_version() {
+    if [ -n "${RELEASE_VERSION:-}" ]; then
+        echo "${RELEASE_VERSION}"
+        return
+    fi
+
+    local exact latest dist tagver
+    exact="$(git describe --tags --exact-match HEAD 2>/dev/null || true)"
+    if printf '%s' "$exact" | grep -qE '^v?[0-9]+\.[0-9]+\.[0-9]+$'; then
+        # Exactly on a semver tag: clean release, strip the leading "v".
+        echo "${exact#v}"
+        return
+    fi
+
+    # Snapshot: base version is the nearest tag; suffix is the commit distance.
+    latest="$(git describe --tags --abbrev=0 2>/dev/null || true)"
+    tagver="${latest#v}"
+    if [ -z "$tagver" ]; then
+        tagver="0.0.0"
+    fi
+    if [ -n "$latest" ]; then
+        dist="$(git rev-list --count "${latest}..HEAD" 2>/dev/null || echo 0)"
+    else
+        dist="$(git rev-list --count HEAD 2>/dev/null || echo 0)"
+    fi
+    echo "${tagver}_rc${dist}"
+}
+
 echo "Choose build type:"
 echo "1) Local build (for testing on this machine)"
 echo "2) Device build (for RMPP / RMPM / aarch64)"
@@ -142,8 +180,10 @@ elif [ "$choice" = "3" ]; then
 elif [ "$choice" = "4" ]; then
     echo "Building GitHub release (ARM64 + ARMv7)..."
 
-    # Get date for versioning
-    VERSION=$(date +%Y-%m-%d)
+    # Release version from git (see get_release_version above)
+    VERSION="$(get_release_version)"
+    current_tag="$(git describe --tags --exact-match HEAD 2>/dev/null || git describe --tags --abbrev=0 2>/dev/null || echo 'none')"
+    echo "Using release version: ${VERSION}  (nearest tag: ${current_tag})"
 
     # Create release directories
     mkdir -p dist-release/irilon-arm64/backend
