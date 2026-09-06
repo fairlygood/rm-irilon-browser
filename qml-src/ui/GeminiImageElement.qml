@@ -53,12 +53,16 @@ Item {
             }
         }
 
-        // Loading text
+        // Loading text - only shown while the image is still being
+        // fetched/decoded; collapsed (height 0) once it is ready or failed
+        // so it doesn't leave a gap under the image.
         Text {
             text: "Loading image..."
             font.pixelSize: Math.round(14 * scaleFactor)
             font.family: "Maple Mono"
             color: "#666666"
+            visible: imageContent.status === Image.Null || imageContent.status === Image.Loading
+            height: visible ? implicitHeight : 0
         }
     }
 }
