@@ -311,6 +311,25 @@ func (replier *BackendReplier) SendMessage(msgType uint32, content string) error
 	return nil
 }
 
+// moveLegacyUserFile relocates a user data file that older versions stored
+// directly in the home directory into the application's config directory
+// (~/.config/irilon). It is a no-op when there is nothing to migrate or when
+// the new location already holds data.
+func moveLegacyUserFile(homeDir, configDir, legacyName, fileName string) error {
+	legacyPath := filepath.Join(homeDir, legacyName)
+	if _, err := os.Stat(legacyPath); err != nil {
+		return nil // No legacy file; nothing to migrate.
+	}
+	newPath := filepath.Join(configDir, fileName)
+	if _, err := os.Stat(newPath); err == nil {
+		return nil // The new location already has data.
+	}
+	if err := os.MkdirAll(configDir, 0700); err != nil {
+		return err
+	}
+	return os.Rename(legacyPath, newPath)
+}
+
 // NewCertificateManager creates a new certificate manager
 func NewCertificateManager() (*CertificateManager, error) {
 	homeDir, err := os.UserHomeDir()
@@ -318,8 +337,17 @@ func NewCertificateManager() (*CertificateManager, error) {
 		return nil, fmt.Errorf("failed to get user home directory: %v", err)
 	}
 
+	// XDG-style config location; older versions stored this in the home dir.
+	configDir := filepath.Join(homeDir, ".config", "irilon")
+	if err := moveLegacyUserFile(homeDir, configDir, ".gemini-certificates.json", "certificates.json"); err != nil {
+		return nil, fmt.Errorf("failed to migrate certificates file: %v", err)
+	}
+	if err := os.MkdirAll(configDir, 0700); err != nil {
+		return nil, fmt.Errorf("failed to create config directory: %v", err)
+	}
+
 	// Path for certificates file
-	certFilePath := filepath.Join(homeDir, ".gemini-certificates.json")
+	certFilePath := filepath.Join(configDir, "certificates.json")
 
 	// Create certificates file if it doesn't exist
 	if _, err := os.Stat(certFilePath); os.IsNotExist(err) {
@@ -343,7 +371,7 @@ func NewCertificateManager() (*CertificateManager, error) {
 	}
 
 	return &CertificateManager{
-		certDir:       filepath.Dir(certFilePath),
+		certDir:       configDir,
 		assocFilePath: certFilePath, // Use the same file for both certificates and associations
 	}, nil
 }
@@ -745,7 +773,16 @@ func NewSettingsManager() (*SettingsManager, error) {
 		return nil, fmt.Errorf("failed to get user home directory: %v", err)
 	}
 
-	settingsFile := filepath.Join(homeDir, ".irilon-settings.json")
+	// XDG-style config location; older versions stored this in the home dir.
+	configDir := filepath.Join(homeDir, ".config", "irilon")
+	if err := moveLegacyUserFile(homeDir, configDir, ".irilon-settings.json", "settings.json"); err != nil {
+		return nil, fmt.Errorf("failed to migrate settings file: %v", err)
+	}
+	if err := os.MkdirAll(configDir, 0700); err != nil {
+		return nil, fmt.Errorf("failed to create config directory: %v", err)
+	}
+
+	settingsFile := filepath.Join(configDir, "settings.json")
 
 	// Create file if it doesn't exist
 	if _, err := os.Stat(settingsFile); os.IsNotExist(err) {
