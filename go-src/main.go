@@ -707,7 +707,12 @@ func getDefaultBookmarks() []Bookmark {
 		},
 		{
 			Title:     "Antenna",
-			URL:       "gemini://warmedal.se/~antenna/",
+			URL:       "gemini://antenna.michaelnordmeyer.com/",
+			DateAdded: "2026-02-07T19:25:48Z",
+		},
+		{
+			Title:     "Smol.Pub",
+			URL:       "gemini://smol.pub",
 			DateAdded: "2026-02-07T19:25:48Z",
 		},
 		{
