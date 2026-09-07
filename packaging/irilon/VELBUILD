@@ -8,7 +8,7 @@ pkgdesc="Gemini protocol browser for reMarkable tablets"
 url="https://github.com/fairlygood/rm-irilon-browser"
 arch="aarch64 armv7"
 license="MIT"
-depends="appload !rm1"
+depends="appload"
 readmeurl="https://raw.githubusercontent.com/$upstream_author/rm-irilon-browser/v$pkgver/README.md"
 
 source="
