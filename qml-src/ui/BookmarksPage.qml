@@ -18,56 +18,31 @@ Rectangle {
     function unloading() {
     }
 
-    // Update bookmarks list
+    // Update the bookmarks list. Skipping no-op updates avoids rebuilding the
+    // (still visible) list when the page is reopened with unchanged data.
     function updateBookmarks(list) {
-        bookmarks = list || []
-        populateBookmarksList()
-    }
-
-    // Guard to prevent re-entrant calls
-    property bool _isPopulating: false
-
-    // Populate the bookmarks list UI
-    function populateBookmarksList() {
-        if (_isPopulating) {
+        list = list || []
+        if (JSON.stringify(list) === JSON.stringify(bookmarks)) {
             return
         }
-        _isPopulating = true
+        bookmarks = list
+    }
 
-        // Clear existing items
-        for (var i = bookmarksList.children.length - 1; i >= 0; i--) {
-            bookmarksList.children[i].destroy()
+    // Any change to `bookmarks` (from updateBookmarks or the property binding)
+    // rebuilds the model; the Repeater keeps the rendered items in sync without
+    // the destroy/create overlap that caused a momentary duplicate list.
+    onBookmarksChanged: {
+        bookmarkModel.clear()
+        for (var i = 0; i < bookmarks.length; i++) {
+            bookmarkModel.append({
+                "title": bookmarks[i].title || "Untitled",
+                "url": bookmarks[i].url || ""
+            })
         }
+    }
 
-        if (bookmarks && bookmarks.length > 0) {
-            var component = Qt.createComponent("qrc:/ui/BookmarkItem.qml")
-            for (var i = 0; i < bookmarks.length; i++) {
-                var bookmark = bookmarks[i]
-                var title = bookmark.title || "Untitled"
-                var url = bookmark.url || ""
-                if (component.status === Component.Ready) {
-                    var item = component.createObject(bookmarksList, {
-                        "scaleFactor": scaleFactor,
-                        "bookmarkTitle": title,
-                        "bookmarkUrl": url
-                    })
-                    if (item) {
-                        item.openClicked.connect(function(u) {
-                            openBookmark(u)
-                        })
-                        item.deleteClicked.connect(function(u) {
-                            deleteBookmark(u)
-                        })
-                    }
-                } else if (component.status === Component.Error) {
-                }
-            }
-        } else {
-            var qmlString = 'import QtQuick 2.15; Text { width: parent.width; horizontalAlignment: Text.AlignHCenter; text: "No bookmarks yet"; font.family: "Maple Mono"; font.pixelSize: Math.round(14 * ' + scaleFactor + '); color: "#666666"; topPadding: 40 * ' + scaleFactor + ' }'
-            Qt.createQmlObject(qmlString, bookmarksList, "noBookmarks")
-        }
-
-        _isPopulating = false
+    ListModel {
+        id: bookmarkModel
     }
 
     ColumnLayout {
@@ -132,6 +107,30 @@ Rectangle {
                 leftPadding: 20 * scaleFactor
                 rightPadding: 20 * scaleFactor
                 topPadding: 20 * scaleFactor
+
+                Text {
+                    width: parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                    text: "No bookmarks yet"
+                    font.family: "Maple Mono"
+                    font.pixelSize: Math.round(14 * bookmarksPage.scaleFactor)
+                    color: "#666666"
+                    topPadding: 40 * bookmarksPage.scaleFactor
+                    visible: bookmarkModel.count === 0
+                }
+
+                Repeater {
+                    model: bookmarkModel
+
+                    delegate: BookmarkItem {
+                        scaleFactor: bookmarksPage.scaleFactor
+                        bookmarkTitle: title
+                        bookmarkUrl: url
+
+                        onOpenClicked: (u) => openBookmark(u)
+                        onDeleteClicked: (u) => deleteBookmark(u)
+                    }
+                }
             }
         }
     }
